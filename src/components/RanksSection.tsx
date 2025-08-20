@@ -25,19 +25,43 @@ const RanksSection = () => {
       const sectionHeight = sectionRef.current.offsetHeight;
       const windowHeight = window.innerHeight;
       
+      console.log('Scroll Debug:', {
+        rectTop: rect.top,
+        rectBottom: rect.bottom,
+        sectionHeight,
+        windowHeight
+      });
+      
       // Calculate when section is in view
       const isInView = rect.top < windowHeight && rect.bottom > 0;
       
       if (isInView) {
         // Calculate scroll progress within the section
-        const sectionStart = -rect.top;
-        const sectionProgress = Math.max(0, Math.min(1, sectionStart / (sectionHeight - windowHeight)));
+        // When rect.top is 0, we're at the start of the section
+        // When rect.top is negative, we've scrolled into the section
+        const scrolledIntoSection = Math.max(0, -rect.top);
+        const maxScroll = sectionHeight - windowHeight;
+        const sectionProgress = Math.min(1, scrolledIntoSection / maxScroll);
+        
+        console.log('Progress Debug:', {
+          scrolledIntoSection,
+          maxScroll,
+          sectionProgress
+        });
         
         setScrollProgress(sectionProgress);
         
         // Calculate which rank to show based on scroll progress
-        const rankIndex = Math.floor(sectionProgress * ranks.length);
-        const clampedIndex = Math.max(0, Math.min(ranks.length - 1, rankIndex));
+        const totalRanks = ranks.length;
+        const rankIndex = Math.floor(sectionProgress * (totalRanks - 1));
+        const clampedIndex = Math.max(0, Math.min(totalRanks - 1, rankIndex));
+        
+        console.log('Rank Debug:', {
+          rankIndex,
+          clampedIndex,
+          currentRank: ranks[clampedIndex]?.name
+        });
+        
         setCurrentRankIndex(clampedIndex);
       }
     };
@@ -54,7 +78,7 @@ const RanksSection = () => {
     <section 
       ref={sectionRef}
       className="relative overflow-hidden"
-      style={{ height: `${ranks.length * 100}vh` }}
+      style={{ height: `${ranks.length * 50}vh` }}
     >
       {/* Fixed content container */}
       <div className="sticky top-0 h-screen flex items-center justify-center">
