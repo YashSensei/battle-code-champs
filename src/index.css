@@ -1,121 +1,162 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Space+Grotesk:wght@300..700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Code Bets Gaming Platform Design System - Dark theme with neon accents */
-
+/* Modern design system with dark theme */
 @layer base {
   :root {
-    --background: 220 15% 6%;
-    --foreground: 0 0% 98%;
-
-    --card: 220 15% 8%;
-    --card-foreground: 0 0% 95%;
-
-    --popover: 220 15% 8%;
-    --popover-foreground: 0 0% 95%;
-
-    --primary: 210 100% 55%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 270 100% 65%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 220 15% 12%;
-    --muted-foreground: 0 0% 65%;
-
-    --accent: 180 100% 50%;
-    --accent-foreground: 0 0% 98%;
-
+    /* Light mode */
+    --background: 0 0% 98%; /* #FAFAFB */
+    --foreground: 215 25% 11%; /* #111827 */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 215 25% 11%; /* #111827 */
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 11%;
+    --primary: 215 25% 11%; /* #111827 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 215 25% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%; /* #6B7280 */
+    --accent: 220 14% 96%;
+    --accent-foreground: 215 25% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 220 15% 15%;
-    --input: 220 15% 12%;
-    --ring: 210 100% 55%;
-
-    /* Gaming-specific colors */
-    --neon-blue: 210 100% 55%;
-    --neon-purple: 270 100% 65%;
-    --neon-cyan: 180 100% 50%;
-    --neon-pink: 320 100% 70%;
-    --electric-green: 120 100% 50%;
-    
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210 100% 55%), hsl(270 100% 65%));
-    --gradient-secondary: linear-gradient(135deg, hsl(180 100% 50%), hsl(210 100% 55%));
-    --gradient-accent: linear-gradient(135deg, hsl(270 100% 65%), hsl(320 100% 70%));
-    --gradient-hero: radial-gradient(ellipse at center, hsl(210 100% 55% / 0.2), transparent);
-    
-    /* Shadows and glows */
-    --glow-primary: 0 0 30px hsl(210 100% 55% / 0.5);
-    --glow-secondary: 0 0 30px hsl(270 100% 65% / 0.5);
-    --glow-accent: 0 0 30px hsl(180 100% 50% / 0.5);
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 215 25% 11%;
+    --radius: 0.75rem;
   }
-
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 2 6% 3%; /* #050609 */
+    --foreground: 0 0% 98%;
+    --card: 2 6% 3%;
+    --card-foreground: 0 0% 98%;
+    --popover: 2 6% 3%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 2 6% 3%;
+    --secondary: 215 25% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 215 25% 12%;
+    --muted-foreground: 220 9% 70%;
+    --accent: 215 25% 12%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 25% 15%;
+    --input: 215 25% 15%;
+    --ring: 0 0% 83%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    @apply bg-background text-foreground;
+    height: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
   }
+
+  #root {
+    min-height: 100vh;
+    background: hsl(var(--background));
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .display-font {
+    @apply font-display tracking-tighter;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+}
+
+@layer components {
+  .btn-press {
+    @apply active:translate-y-[1px] active:shadow-sm transition-all;
+  }
+  .focus-visible-ring {
+    @apply focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black/20 focus-visible:outline-none;
+  }
+}
+
+/* Section transitions */
+.section-fade-in {
+  animation: sectionFadeIn 0.5s ease-out forwards;
+  }
+
+@keyframes sectionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered children animation */
+.stagger-children > * {
+    opacity: 0;
+  transform: translateY(10px);
+  }
+
+.stagger-children > *:nth-child(1) {
+  animation: staggerFade 0.4s 0.1s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(2) {
+  animation: staggerFade 0.4s 0.2s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(3) {
+  animation: staggerFade 0.4s 0.3s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(4) {
+  animation: staggerFade 0.4s 0.4s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(5) {
+  animation: staggerFade 0.4s 0.5s ease-out forwards;
+}
+
+@keyframes staggerFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Remove any potential scrollbars on the main layout */
+main {
+  overflow-x: hidden;
+}
+
+/* Ensure consistent dark theming */
+.min-h-screen {
+  min-height: 100vh;
 }
