@@ -14,6 +14,23 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const smoothScrollTo = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
+  const scrollToFooter = () => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -65,18 +82,18 @@ const Navbar = () => {
             >
               Ranks
             </a>
-            <a
-              href="#"
+            <button
+              onClick={scrollToFooter}
               className="text-white/70 hover:text-white transition-colors"
             >
               Contact
-            </a>
-            <a
-              href="#"
+            </button>
+            <button
+              onClick={() => smoothScrollTo('faq-section')}
               className="text-white/70 hover:text-white transition-colors"
             >
               FAQ
-            </a>
+            </button>
           </nav>
 
           {/* Actions */}
@@ -84,8 +101,12 @@ const Navbar = () => {
             <Button
               variant="outline"
               className="h-9 px-4 rounded-full border-white/15 text-white hover:bg-white/10 hover:border-white/20 button-depth"
+              onClick={() => {
+                const element = document.getElementById('early-access-section');
+                element?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
-              Sign in
+              Early Access
             </Button>
           </div>
         </div>
