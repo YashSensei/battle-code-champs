@@ -4,11 +4,11 @@ import { useIntersectionObserver } from "@/hooks/useParallax";
 
 const points = [
   {
-    value: "100",
-    title: "Welcome Bonus",
+    value: "-10",
+    title: "Learn from Defeat",
     description:
-      "Start your journey with 100 points. Build momentum from day one.",
-    icon: "🎯",
+      "Minimal point loss keeps you motivated. Every defeat teaches valuable lessons.",
+    icon: "⚡",
     iconBg: "from-indigo-600/30 to-purple-600/30",
   },
   {
@@ -20,25 +20,25 @@ const points = [
     iconBg: "from-purple-600/30 to-indigo-600/30",
   },
   {
-    value: "-5",
-    title: "Learn from Defeat",
+    value: "100",
+    title: "Welcome Bonus",
     description:
-      "Minimal point loss keeps you motivated. Every defeat teaches valuable lessons.",
-    icon: "⚡",
+      "Start your journey with 100 points. Build momentum from day one.",
+    icon: "🎯",
     iconBg: "from-indigo-600/30 to-purple-600/30",
   },
 ];
 
 const PointsSection = () => {
-  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.2);
+  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
 
   return (
     <section
       id="points-section"
       className="relative py-32 overflow-hidden -mt-1"
     >
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0F1117] via-[#0D0F1A] to-[#0A0B14] -z-10" />
+      {/* Background - seamlessly blends into ranks section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0F1117] via-[#0D0F1A] to-[#0D0F1A] -z-10" />
 
       {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-gradient-to-r from-indigo-600/5 to-purple-600/5 blur-[100px] -z-10" />
@@ -49,8 +49,8 @@ const PointsSection = () => {
       >
         {/* Section header */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={hasIntersected ? { opacity: 1 } : {}}
+          initial={{ opacity: 0, y: 30 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
@@ -68,15 +68,15 @@ const PointsSection = () => {
           {points.map((point, index) => (
             <motion.div
               key={point.title}
-              initial={{ opacity: 0 }}
-              animate={hasIntersected ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 40 }}
+              animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
             >
-              <div className="glass-dark rounded-2xl p-8 shadow-2xl ring-1 ring-white/5 h-full">
+              <div className="glass-dark rounded-2xl p-8 shadow-depth-lg h-full">
                 <div className="relative z-10">
                   {/* Icon */}
                   <div
-                    className={`w-16 h-16 rounded-xl bg-gradient-to-br ${point.iconBg} ring-1 ring-white/10 flex items-center justify-center mb-6 shadow-lg`}
+                    className={`w-16 h-16 rounded-xl bg-gradient-to-br ${point.iconBg} flex items-center justify-center mb-6 shadow-lg`}
                   >
                     <span className="text-2xl">{point.icon}</span>
                   </div>
@@ -103,28 +103,6 @@ const PointsSection = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={hasIntersected ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-16"
-        >
-          <div className="glass-dark rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl ring-1 ring-white/5">
-            <h3 className="text-2xl font-medium text-white mb-4 font-display">
-              Ready to Start Earning?
-            </h3>
-            <p className="text-white/60 font-light mb-6 leading-relaxed">
-              Join thousands of developers already climbing the ranks. Your
-              first victory is just one duel away.
-            </p>
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20 ring-1 ring-white/10 text-white/80 text-sm">
-              <div className="w-2 h-2 rounded-full bg-emerald-400" />
-              Coming Soon
-            </div>
-          </div>
-        </motion.div>
       </motion.div>
     </section>
   );

@@ -105,7 +105,7 @@
 /* Section transitions */
 .section-fade-in {
   animation: sectionFadeIn 0.5s ease-out forwards;
-}
+  }
 
 @keyframes sectionFadeIn {
   from {
@@ -120,9 +120,9 @@
 
 /* Staggered children animation */
 .stagger-children > * {
-  opacity: 0;
+    opacity: 0;
   transform: translateY(10px);
-}
+  }
 
 .stagger-children > *:nth-child(1) {
   animation: staggerFade 0.4s 0.1s ease-out forwards;
