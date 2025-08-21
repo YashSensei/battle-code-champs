@@ -1,119 +1,186 @@
-import { useEffect, useState } from 'react';
-import { useParallax } from '@/hooks/useParallax';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useIntersectionObserver } from "@/hooks/useParallax";
 
 const ComingSoonSection = () => {
-  const scrollY = useParallax();
-  const [isVisible, setIsVisible] = useState(false);
-  const [email, setEmail] = useState('');
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const element = document.getElementById('coming-soon-section');
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        setIsVisible(rect.top < window.innerHeight && rect.bottom > 0);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [email, setEmail] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.2);
 
   const handleNotifyMe = () => {
-    if (email) {
-      // Handle email signup logic here
-      console.log('Email signup:', email);
-      setEmail('');
+    if (email && !isSubmitted) {
+      console.log("Email signup:", email);
+      setIsSubmitted(true);
+      setTimeout(() => {
+        setEmail("");
+        setIsSubmitted(false);
+      }, 3000);
     }
   };
 
   return (
-    <section 
-      id="coming-soon-section"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
-    >
-      {/* Parallax Background */}
-      <div 
-        className="absolute inset-0"
-        style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+    <section className="relative py-40 overflow-hidden">
+      {/* Background with enhanced gradients */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050609] via-[#0A0B14] to-[#0D0F1A] -z-10" />
+
+      {/* Multiple background glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] rounded-full bg-gradient-to-r from-indigo-600/15 to-purple-600/15 blur-[140px] -z-10" />
+      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/10 blur-[100px] -z-10" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-blue-500/12 to-indigo-500/12 blur-[80px] -z-10" />
+
+      <motion.div
+        ref={intersectionRef as any}
+        className="relative z-10 mx-auto max-w-6xl px-6 lg:px-8 text-center"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-card/50" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-purple/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-cyan/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
-
-      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        <div className={`transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
-          <h2 className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-blue bg-clip-text text-transparent animate-text-glow">
-            COMING SOON
-          </h2>
-          
-          <div className="h-1 w-48 bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-12 rounded-full" />
-        </div>
-
-        <div className={`transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '0.2s' }}>
-          <p className="text-2xl md:text-3xl text-muted-foreground mb-12 leading-relaxed">
-            The ultimate competitive programming battleground is being forged. 
-            <br />
-            <span className="text-neon-cyan font-semibold">Prepare for the revolution.</span>
-          </p>
-        </div>
-
-        <Card className={`p-8 bg-card/30 backdrop-blur-sm border-border max-w-2xl mx-auto transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '0.4s' }}>
-          <h3 className="text-2xl font-bold mb-6 text-neon-purple">Be the First to Enter the Arena</h3>
-          <p className="text-muted-foreground mb-8">
-            Join our exclusive waitlist and be among the first to experience the future of competitive programming. 
-            Early access warriors will receive special bonuses!
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 bg-background/50 border-border focus:border-neon-blue"
-            />
-            <Button 
-              variant="hero" 
-              onClick={handleNotifyMe}
-              className="sm:px-8"
+        {/* Status indicators */}
+        <motion.div
+          className="flex flex-wrap justify-center gap-6 mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+        >
+          {[
+            { icon: "🚀", label: "Beta Launch", status: "TBA" },
+            { icon: "⚡", label: "Live Battles", status: "In Development" },
+            { icon: "🏆", label: "Tournament Mode", status: "Coming Soon" },
+          ].map((item, index) => (
+            <motion.div
+              key={item.label}
+              className="glass-dark px-6 py-4 rounded-2xl ring-1 ring-white/10 flex items-center gap-4 text-white/70 shadow-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              Notify Me
-            </Button>
-          </div>
-        </Card>
+              <span className="text-2xl">{item.icon}</span>
+              <div className="text-left">
+                <div className="text-white font-medium text-sm">
+                  {item.label}
+                </div>
+                <div className="text-white/50 text-xs">{item.status}</div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-        <div className={`mt-16 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '0.6s' }}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <h4 className="text-xl font-bold text-neon-blue mb-2">Real-Time Battles</h4>
-              <p className="text-muted-foreground">Live 1v1 coding duels with instant feedback</p>
+        {/* Main heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-600/20 to-teal-600/20 ring-1 ring-emerald-400/20 text-emerald-300 text-sm mb-8 shadow-xl">
+            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+            Platform Development in Progress
+          </div>
+
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-display font-light tracking-tighter text-white mb-8 leading-tight">
+            The Future of{" "}
+            <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-400 bg-clip-text text-transparent font-medium">
+              Code Battles
+            </span>{" "}
+            is Almost Here
+          </h2>
+
+          <p className="text-xl md:text-2xl text-white/60 max-w-4xl mx-auto font-light leading-relaxed">
+            Join thousands of developers eagerly waiting to experience the most
+            advanced competitive programming platform ever built. Be among the
+            first to shape the future of coding competitions.
+          </p>
+        </motion.div>
+
+        {/* Email signup form - Enhanced */}
+        <motion.div
+          className="max-w-2xl mx-auto mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          <div className="glass-dark rounded-3xl p-8 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl">
+            <h3 className="text-2xl font-medium text-white mb-4 font-display">
+              Get Early Access
+            </h3>
+            <p className="text-white/60 text-sm mb-8 font-light">
+              Be the first to experience Code Bets. Early members get exclusive
+              perks and lifetime benefits.
+            </p>
+
+            <div className="glass-dark rounded-full p-3 shadow-xl ring-1 ring-white/10 mb-6">
+              <div className="flex items-center gap-3">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 h-14 bg-transparent border-0 text-white placeholder-white/50 px-6 focus:outline-none text-base font-light"
+                  disabled={isSubmitted}
+                />
+                <button
+                  onClick={handleNotifyMe}
+                  disabled={isSubmitted}
+                  className="h-14 px-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-base shadow-lg transition-all duration-300 disabled:opacity-75"
+                >
+                  {isSubmitted ? "✓ Welcome to the Waitlist!" : "Join Waitlist"}
+                </button>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xl font-bold text-neon-purple mb-2">Global Leaderboards</h4>
-              <p className="text-muted-foreground">Compete with programmers worldwide</p>
-            </div>
-            <div>
-              <h4 className="text-xl font-bold text-neon-cyan mb-2">Epic Rankings</h4>
-              <p className="text-muted-foreground">Rise from Silver to the legendary King rank</p>
+
+            {/* Privacy and benefits */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
+              <span>
+                No spam, unsubscribe anytime. Your privacy is our priority.
+              </span>
+              <div className="flex items-center gap-4">
+                <span>✓ Early access</span>
+                <span>✓ Exclusive perks</span>
+                <span>✓ Beta testing</span>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Animated Code Elements */}
-        <div className="absolute top-10 right-10 text-neon-blue/20 font-mono text-sm animate-pulse">
-          {'{ "status": "coming_soon" }'}
-        </div>
-        <div className="absolute bottom-10 left-10 text-neon-purple/20 font-mono text-sm animate-pulse" style={{ animationDelay: '0.5s' }}>
-          {'while(true) { code(); }'}
-        </div>
-      </div>
+        {/* Feature highlights */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 40 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          {[
+            {
+              icon: "⚡",
+              title: "Lightning Fast",
+              desc: "Sub-second response times for real-time coding battles",
+            },
+            {
+              icon: "🛡️",
+              title: "Ultra Secure",
+              desc: "Enterprise-grade security with fair play enforcement",
+            },
+            {
+              icon: "🌍",
+              title: "Global Community",
+              desc: "Connect with developers worldwide in epic code duels",
+            },
+          ].map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              className="glass-dark rounded-2xl p-6 shadow-xl ring-1 ring-white/5 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+            >
+              <div className="text-3xl mb-4">{feature.icon}</div>
+              <h3 className="text-white font-medium mb-2 font-display">
+                {feature.title}
+              </h3>
+              <p className="text-white/60 text-sm font-light leading-relaxed">
+                {feature.desc}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

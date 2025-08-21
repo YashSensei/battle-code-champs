@@ -1,124 +1,167 @@
-import { useEffect, useState } from 'react';
-import { useParallax } from '@/hooks/useParallax';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useIntersectionObserver } from "@/hooks/useParallax";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const ranks = [
-  { name: 'Silver', color: 'from-gray-400 to-gray-500', description: 'Your coding journey begins', minPoints: 0 },
-  { name: 'Gold', color: 'from-yellow-400 to-yellow-600', description: 'Rising through the ranks', minPoints: 500 },
-  { name: 'Platinum', color: 'from-cyan-400 to-cyan-600', description: 'Elite programmer status', minPoints: 1000 },
-  { name: 'Diamond', color: 'from-blue-400 to-blue-600', description: 'Exceptional coding skills', minPoints: 2000 },
-  { name: 'Dominator', color: 'from-purple-400 to-purple-600', description: 'Fear-inducing presence', minPoints: 5000 },
-  { name: 'Crusher', color: 'from-red-400 to-red-600', description: 'Unstoppable force of code', minPoints: 10000 },
-  { name: 'King', color: 'from-neon-blue via-neon-purple to-neon-cyan', description: 'Ultimate coding supremacy', minPoints: 25000 }
+  {
+    name: "Ashigaru",
+    color: "from-indigo-400 to-purple-500",
+    description: "Foot soldier — the path begins",
+    minPoints: 0,
+    icon: "足",
+  },
+  {
+    name: "Shinobi",
+    color: "from-indigo-300 to-purple-400",
+    description: "Warrior bound by code",
+    minPoints: 500,
+    icon: "忍",
+  },
+  {
+    name: "Rōnin",
+    color: "from-indigo-200 to-purple-300",
+    description: "Banner guard of the elite",
+    minPoints: 1500,
+    icon: "浪",
+  },
+  {
+    name: "Hatamoto",
+    color: "from-indigo-100 to-purple-200",
+    description: "Lord of many battles",
+    minPoints: 4000,
+    icon: "旗",
+  },
+  {
+    name: "Shōgun",
+    color: "from-white to-indigo-100",
+    description: "Supreme warlord of code",
+    minPoints: 10000,
+    icon: "将",
+  },
 ];
 
 const RanksSection = () => {
-  const scrollY = useParallax();
-  const [isVisible, setIsVisible] = useState(false);
-  const [animatedRanks, setAnimatedRanks] = useState<number[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.2);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const element = document.getElementById('ranks-section');
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        const visible = rect.top < window.innerHeight && rect.bottom > 0;
-        setIsVisible(visible);
-        
-        if (visible && animatedRanks.length === 0) {
-          // Stagger rank animations
-          ranks.forEach((_, index) => {
-            setTimeout(() => {
-              setAnimatedRanks(prev => [...prev, index]);
-            }, index * 200);
-          });
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [animatedRanks.length]);
+  const y = useSpring(useTransform(scrollYProgress, [0, 1], ["3%", "-3%"]));
 
   return (
-    <section 
+    <motion.section
+      ref={containerRef}
       id="ranks-section"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden py-20"
+      className="relative py-32 overflow-hidden"
+      style={{ y }}
     >
-      {/* Parallax Background */}
-      <div 
-        className="absolute inset-0"
-        style={{ transform: `translateY(${scrollY * 0.2}px)` }}
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0D0F1A] via-[#0A0B14] to-[#050609] -z-10" />
+
+      {/* Subtle glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] rounded-full bg-gradient-to-r from-indigo-600/8 to-purple-600/8 blur-[120px] -z-10" />
+
+      <motion.div
+        ref={intersectionRef as any}
+        className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8"
       >
-        <div className="absolute top-10 left-10 w-96 h-96 bg-neon-blue/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-neon-purple/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-neon-cyan/3 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className={`text-center mb-16 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
-          <h2 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-blue bg-clip-text text-transparent">
-            Rise Through the Ranks
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-6">
+            Feudal Ranks of Honor
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Every battle brings you closer to greatness. Climb the competitive ladder and prove your coding supremacy across seven legendary ranks.
+          <p className="text-xl text-white/60 max-w-3xl mx-auto font-light leading-relaxed">
+            Progress through the medieval Japanese hierarchy. Earn your crest.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Ranks grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-16">
           {ranks.map((rank, index) => (
-            <Card 
+            <motion.div
               key={rank.name}
-              className={`p-6 bg-card/30 backdrop-blur-sm border-border hover:border-neon-blue transition-all duration-700 transform ${
-                animatedRanks.includes(index) ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-95'
-              } ${rank.name === 'King' ? 'md:col-span-2 lg:col-span-3 xl:col-span-4' : ''}`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <div className={`text-center ${rank.name === 'King' ? 'py-8' : ''}`}>
-                {/* Rank Badge */}
-                <div className={`w-16 h-16 ${rank.name === 'King' ? 'w-24 h-24' : ''} bg-gradient-to-r ${rank.color} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg animate-glow-pulse`}>
-                  <span className={`font-bold text-background ${rank.name === 'King' ? 'text-2xl' : 'text-lg'}`}>
-                    {rank.name === 'King' ? '👑' : index + 1}
-                  </span>
+              <div className="glass-dark rounded-3xl p-8 shadow-2xl ring-1 ring-white/5 h-full text-center">
+                {/* Rank Icon */}
+                <div className="text-4xl mb-6 text-white/90 font-light">
+                  {rank.icon}
                 </div>
 
-                {/* Rank Name */}
-                <h3 className={`font-bold mb-2 bg-gradient-to-r ${rank.color} bg-clip-text text-transparent ${rank.name === 'King' ? 'text-4xl' : 'text-2xl'}`}>
-                  {rank.name}
-                </h3>
-
-                {/* Description */}
-                <p className={`text-muted-foreground mb-4 ${rank.name === 'King' ? 'text-lg' : 'text-sm'}`}>
-                  {rank.description}
-                </p>
-
-                {/* Points Requirement */}
-                <Badge variant="outline" className={`border-border ${rank.name === 'King' ? 'text-lg px-4 py-2' : ''}`}>
-                  {rank.minPoints === 0 ? 'Starting Rank' : `${rank.minPoints}+ points`}
-                </Badge>
-
-                {rank.name === 'King' && (
-                  <div className="mt-6">
-                    <p className="text-lg text-neon-cyan font-semibold">
-                      The ultimate achievement in competitive programming
-                    </p>
+                {/* Crest badge */}
+                <div className="mx-auto mb-8">
+                  <div
+                    className={`relative w-20 h-20 rounded-full bg-gradient-to-br ${rank.color} shadow-2xl ring-1 ring-white/10 mx-auto`}
+                  >
+                    <div className="absolute inset-[2px] rounded-full bg-[#0A0B14]/80 backdrop-blur-md" />
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <span className="font-display text-lg font-medium text-white">
+                        {index + 1}
+                      </span>
+                    </div>
                   </div>
-                )}
+                </div>
+
+                {/* Content */}
+                <div>
+                  <h3
+                    className={`text-2xl font-display font-medium mb-3 bg-gradient-to-r ${rank.color} bg-clip-text text-transparent`}
+                  >
+                    {rank.name}
+                  </h3>
+                  <p className="text-white/60 text-sm font-light mb-6 leading-relaxed">
+                    {rank.description}
+                  </p>
+                  <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/5 ring-1 ring-white/10 text-white/70 text-sm font-light">
+                    {rank.minPoints === 0
+                      ? "Starting Rank"
+                      : `${rank.minPoints}+ points`}
+                  </div>
+                </div>
               </div>
-            </Card>
+            </motion.div>
           ))}
         </div>
 
-        <div className={`text-center mt-16 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '1.4s' }}>
-          <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-            Each rank represents mastery, dedication, and countless hours of competitive programming excellence. 
-            Will you have what it takes to wear the crown?
-          </p>
-        </div>
-      </div>
-    </section>
+        {/* Featured Shogun card */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="glass-dark rounded-3xl p-12 shadow-2xl ring-1 ring-white/5 text-center relative overflow-hidden">
+            {/* Background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-purple-600/10 to-transparent rounded-3xl" />
+
+            <div className="relative z-10">
+              <div className="text-6xl mb-8 text-white/90">将</div>
+              <h3 className="text-5xl font-display font-light mb-4 bg-gradient-to-r from-white via-indigo-200 to-purple-200 bg-clip-text text-transparent">
+                Shogun
+              </h3>
+              <p className="text-white/70 text-xl mb-8 font-light max-w-2xl mx-auto">
+                The pinnacle of coding mastery. Supreme warlord commanding
+                respect across all battlefields.
+              </p>
+              <div className="inline-flex items-center px-8 py-4 rounded-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20 ring-1 ring-white/10 text-indigo-200 text-lg font-light">
+                10,000+ points required
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </motion.section>
   );
 };
 

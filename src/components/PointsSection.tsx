@@ -1,94 +1,131 @@
-import { useEffect, useState } from 'react';
-import { useParallax } from '@/hooks/useParallax';
-import { Card } from '@/components/ui/card';
+import { useRef } from "react";
+import { motion } from "framer-motion";
+import { useIntersectionObserver } from "@/hooks/useParallax";
+
+const points = [
+  {
+    value: "100",
+    title: "Welcome Bonus",
+    description:
+      "Start your journey with 100 points. Build momentum from day one.",
+    icon: "🎯",
+    iconBg: "from-indigo-600/30 to-purple-600/30",
+  },
+  {
+    value: "+10",
+    title: "Victory Rewards",
+    description:
+      "Earn 10 points for every successful duel victory. Consistency pays off.",
+    icon: "🏆",
+    iconBg: "from-purple-600/30 to-indigo-600/30",
+  },
+  {
+    value: "-5",
+    title: "Learn from Defeat",
+    description:
+      "Minimal point loss keeps you motivated. Every defeat teaches valuable lessons.",
+    icon: "⚡",
+    iconBg: "from-indigo-600/30 to-purple-600/30",
+  },
+];
 
 const PointsSection = () => {
-  const scrollY = useParallax();
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const element = document.getElementById('points-section');
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        setIsVisible(rect.top < window.innerHeight && rect.bottom > 0);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.2);
 
   return (
-    <section 
+    <section
       id="points-section"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden py-20"
+      className="relative py-32 overflow-hidden -mt-1"
     >
-      {/* Parallax Background Elements */}
-      <div 
-        className="absolute inset-0"
-        style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0F1117] via-[#0D0F1A] to-[#0A0B14] -z-10" />
+
+      {/* Subtle background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-gradient-to-r from-indigo-600/5 to-purple-600/5 blur-[100px] -z-10" />
+
+      <motion.div
+        ref={intersectionRef as any}
+        className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8"
       >
-        <div className="absolute top-20 right-20 w-64 h-64 bg-neon-purple/10 rounded-full blur-2xl" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-neon-cyan/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <div className={`transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
-          <h2 className="text-5xl md:text-6xl font-bold text-center mb-16 bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent">
-            Power Up Your Skills
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={hasIntersected ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-6">
+            Point System
           </h2>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Sign Up Bonus */}
-          <Card className={`p-8 bg-card/50 backdrop-blur-sm border-border hover:border-neon-blue transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '0.2s' }}>
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-neon-blue to-neon-cyan rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-bold">100</span>
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-neon-blue">Welcome Bonus</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Sign up with your account and instantly receive <span className="text-neon-cyan font-semibold">100 points</span> to kickstart your coding journey!
-              </p>
-            </div>
-          </Card>
-
-          {/* Win Points */}
-          <Card className={`p-8 bg-card/50 backdrop-blur-sm border-border hover:border-neon-purple transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '0.4s' }}>
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-neon-purple to-neon-pink rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-bold">+10</span>
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-neon-purple">Victory Rewards</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Dominate your opponents and earn <span className="text-neon-purple font-semibold">+10 points</span> for every successful duel victory!
-              </p>
-            </div>
-          </Card>
-
-          {/* Loss Points */}
-          <Card className={`p-8 bg-card/50 backdrop-blur-sm border-border hover:border-neon-pink transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '0.6s' }}>
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-neon-pink to-destructive rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-bold">-10</span>
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-neon-pink">Learn from Defeat</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Every loss costs <span className="text-neon-pink font-semibold">-10 points</span>, but brings you closer to mastery. Rise stronger!
-              </p>
-            </div>
-          </Card>
-        </div>
-
-        <div className={`text-center mt-16 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '0.8s' }}>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Participate in matches, compete with the best, and watch your points soar as you climb the leaderboards in the most competitive coding environment ever created.
+          <p className="text-xl text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
+            Participate in matches, compete with the best, and watch your
+            ranking soar.
           </p>
+        </motion.div>
+
+        {/* Points grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {points.map((point, index) => (
+            <motion.div
+              key={point.title}
+              initial={{ opacity: 0 }}
+              animate={hasIntersected ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+            >
+              <div className="glass-dark rounded-2xl p-8 shadow-2xl ring-1 ring-white/5 h-full">
+                <div className="relative z-10">
+                  {/* Icon */}
+                  <div
+                    className={`w-16 h-16 rounded-xl bg-gradient-to-br ${point.iconBg} ring-1 ring-white/10 flex items-center justify-center mb-6 shadow-lg`}
+                  >
+                    <span className="text-2xl">{point.icon}</span>
+                  </div>
+
+                  {/* Value */}
+                  <div className="mb-6">
+                    <span className="text-4xl md:text-5xl font-display font-light text-white tracking-tight">
+                      {point.value}
+                    </span>
+                    <span className="text-white/60 text-lg ml-2">points</span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-medium mb-4 text-white font-display">
+                    {point.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-white/60 font-light leading-relaxed text-sm">
+                    {point.description}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
-      </div>
+
+        {/* Bottom CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={hasIntersected ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-center mt-16"
+        >
+          <div className="glass-dark rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl ring-1 ring-white/5">
+            <h3 className="text-2xl font-medium text-white mb-4 font-display">
+              Ready to Start Earning?
+            </h3>
+            <p className="text-white/60 font-light mb-6 leading-relaxed">
+              Join thousands of developers already climbing the ranks. Your
+              first victory is just one duel away.
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20 ring-1 ring-white/10 text-white/80 text-sm">
+              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              Coming Soon
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
