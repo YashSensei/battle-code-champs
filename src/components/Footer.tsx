@@ -3,22 +3,22 @@ import { motion } from "framer-motion";
 const Footer = () => {
   return (
     <footer className="relative bg-[#050609] overflow-hidden">
-      {/* Minimal glass background */}
+      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#020306] to-[#050609] -z-10" />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-8 py-16">
-        {/* Main content */}
+      <div className="relative z-10 w-full px-6 lg:px-8 py-16">
+        {/* Main content - full width */}
         <motion.div
-          className="glass-dark rounded-3xl p-8 lg:p-12 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl"
+          className="max-w-6xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-8 mb-8">
             {/* Left section - Logo */}
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg ring-1 ring-white/10">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-depth-sm">
                 <svg
                   width="24"
                   height="24"
@@ -47,9 +47,15 @@ const Footer = () => {
             <div className="flex items-center gap-12">
               {/* Navigation */}
               <div className="hidden md:flex items-center gap-8 text-sm">
-                <span className="text-white/60 font-light">Privacy</span>
-                <span className="text-white/60 font-light">Terms</span>
-                <span className="text-white/60 font-light">Contact</span>
+                <span className="text-white/60 font-light hover:text-white/80 transition-colors cursor-pointer">
+                  Privacy
+                </span>
+                <span className="text-white/60 font-light hover:text-white/80 transition-colors cursor-pointer">
+                  Terms
+                </span>
+                <span className="text-white/60 font-light hover:text-white/80 transition-colors cursor-pointer">
+                  Contact
+                </span>
               </div>
 
               {/* Social icons */}
@@ -61,7 +67,7 @@ const Footer = () => {
                 ].map((icon, index) => (
                   <div
                     key={index}
-                    className="w-10 h-10 rounded-xl glass-dark ring-1 ring-white/10 flex items-center justify-center text-white/40 shadow-lg"
+                    className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white/60 hover:bg-white/10 transition-all shadow-depth-sm cursor-pointer"
                   >
                     <svg
                       width="16"
@@ -79,7 +85,7 @@ const Footer = () => {
           </div>
 
           {/* Copyright */}
-          <div className="mt-8 pt-6 border-t border-white/5 text-center">
+          <div className="pt-6 border-t border-white/10 text-center">
             <p className="text-white/40 text-sm font-light">
               © 2025 Code Bets. All rights reserved.
             </p>

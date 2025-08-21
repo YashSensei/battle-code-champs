@@ -5,6 +5,7 @@ import FeaturesSection from "@/components/FeaturesSection";
 import PointsSection from "@/components/PointsSection";
 import RanksSection from "@/components/RanksSection";
 import ComingSoonSection from "@/components/ComingSoonSection";
+import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
@@ -102,6 +103,7 @@ const Index = () => {
           <PointsSection />
           <RanksSection />
           <ComingSoonSection />
+          <FAQSection />
         </main>
         <Footer />
       </div>

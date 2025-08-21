@@ -1,20 +1,27 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useIntersectionObserver } from "@/hooks/useParallax";
+import { sendWaitlistAcknowledgement } from "@/lib/email";
 
 const ComingSoonSection = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.2);
+  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
 
-  const handleNotifyMe = () => {
-    if (email && !isSubmitted) {
-      console.log("Email signup:", email);
+  const isValidEmail = (value: string) =>
+    /[^\s@]+@[^\s@]+\.[^\s@]+/.test(value);
+
+  const handleNotifyMe = async () => {
+    const trimmed = email.trim();
+    if (!trimmed || !isValidEmail(trimmed)) return;
+
+    try {
+      await sendWaitlistAcknowledgement(trimmed);
       setIsSubmitted(true);
-      setTimeout(() => {
-        setEmail("");
-        setIsSubmitted(false);
-      }, 3000);
+    } catch (err) {
+      console.error("Failed to send acknowledgement email via EmailJS", err);
+      // Keep UX the same even if email sending fails.
+      setIsSubmitted(true);
     }
   };
 
@@ -35,21 +42,33 @@ const ComingSoonSection = () => {
         {/* Status indicators */}
         <motion.div
           className="flex flex-wrap justify-center gap-6 mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
           {[
-            { icon: "🚀", label: "Beta Launch", status: "TBA" },
-            { icon: "⚡", label: "Live Battles", status: "In Development" },
-            { icon: "🏆", label: "Tournament Mode", status: "Coming Soon" },
+            {
+              icon: "🚀",
+              label: "Beta Launch",
+              status: "Q2 2025",
+            },
+            {
+              icon: "⚡",
+              label: "Live Battles",
+              status: "In Development",
+            },
+            {
+              icon: "🏆",
+              label: "Tournament Mode",
+              status: "Coming Soon",
+            },
           ].map((item, index) => (
             <motion.div
               key={item.label}
-              className="glass-dark px-6 py-4 rounded-2xl ring-1 ring-white/10 flex items-center gap-4 text-white/70 shadow-2xl"
-              initial={{ opacity: 0, y: 20 }}
+              className="glass-dark px-6 py-4 rounded-2xl flex items-center gap-4 text-white/70 shadow-depth-md"
+              initial={{ opacity: 0, y: 30 }}
               animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
             >
               <span className="text-2xl">{item.icon}</span>
               <div className="text-left">
@@ -64,16 +83,15 @@ const ComingSoonSection = () => {
 
         {/* Main heading */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 50 }}
           animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, delay: 0.2 }}
           className="mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-600/20 to-teal-600/20 ring-1 ring-emerald-400/20 text-emerald-300 text-sm mb-8 shadow-xl">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-600/20 to-teal-600/20 text-emerald-300 text-sm mb-8 shadow-depth-sm">
             <div className="w-2 h-2 rounded-full bg-emerald-400" />
             Platform Development in Progress
           </div>
-
           <h2 className="text-5xl md:text-6xl lg:text-7xl font-display font-light tracking-tighter text-white mb-8 leading-tight">
             The Future of{" "}
             <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-400 bg-clip-text text-transparent font-medium">
@@ -81,7 +99,6 @@ const ComingSoonSection = () => {
             </span>{" "}
             is Almost Here
           </h2>
-
           <p className="text-xl md:text-2xl text-white/60 max-w-4xl mx-auto font-light leading-relaxed">
             Join thousands of developers eagerly waiting to experience the most
             advanced competitive programming platform ever built. Be among the
@@ -92,11 +109,11 @@ const ComingSoonSection = () => {
         {/* Email signup form - Enhanced */}
         <motion.div
           className="max-w-2xl mx-auto mb-20"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="glass-dark rounded-3xl p-8 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl">
+          <div className="glass-dark rounded-3xl p-8 shadow-depth-xl backdrop-blur-xl">
             <h3 className="text-2xl font-medium text-white mb-4 font-display">
               Get Early Access
             </h3>
@@ -104,8 +121,7 @@ const ComingSoonSection = () => {
               Be the first to experience Code Bets. Early members get exclusive
               perks and lifetime benefits.
             </p>
-
-            <div className="glass-dark rounded-full p-3 shadow-xl ring-1 ring-white/10 mb-6">
+            <div className="glass-dark rounded-full p-3 shadow-depth-lg mb-6">
               <div className="flex items-center gap-3">
                 <input
                   type="email"
@@ -118,22 +134,20 @@ const ComingSoonSection = () => {
                 <button
                   onClick={handleNotifyMe}
                   disabled={isSubmitted}
-                  className="h-14 px-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-base shadow-lg transition-all duration-300 disabled:opacity-75"
+                  className="h-14 px-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-base shadow-depth-md transition-all duration-300 disabled:opacity-75 button-depth"
                 >
                   {isSubmitted ? "✓ Welcome to the Waitlist!" : "Join Waitlist"}
                 </button>
               </div>
             </div>
-
             {/* Privacy and benefits */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
               <span>
-                No spam, unsubscribe anytime. Your privacy is our priority.
+                No spam, pinky promise 😉. Your privacy is our priority.
               </span>
               <div className="flex items-center gap-4">
                 <span>✓ Early access</span>
                 <span>✓ Exclusive perks</span>
-                <span>✓ Beta testing</span>
               </div>
             </div>
           </div>
@@ -142,7 +156,7 @@ const ComingSoonSection = () => {
         {/* Feature highlights */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 50 }}
           animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
@@ -165,10 +179,10 @@ const ComingSoonSection = () => {
           ].map((feature, index) => (
             <motion.div
               key={feature.title}
-              className="glass-dark rounded-2xl p-6 shadow-xl ring-1 ring-white/5 text-center"
-              initial={{ opacity: 0, y: 20 }}
+              className="glass-dark glass-hover rounded-2xl p-6 shadow-depth-lg text-center"
+              initial={{ opacity: 0, y: 30 }}
               animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+              transition={{ duration: 0.8, delay: 0.8 + index * 0.1 }}
             >
               <div className="text-3xl mb-4">{feature.icon}</div>
               <h3 className="text-white font-medium mb-2 font-display">
