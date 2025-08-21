@@ -26,7 +26,7 @@ const ComingSoonSection = () => {
   };
 
   return (
-    <section className="relative py-40 overflow-hidden">
+    <section id="early-access-section" className="relative py-40 overflow-hidden">
       {/* Background with enhanced gradients */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#050609] via-[#0A0B14] to-[#0D0F1A] -z-10" />
 

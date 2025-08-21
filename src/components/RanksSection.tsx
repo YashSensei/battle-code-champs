@@ -141,6 +141,9 @@ const ranks = [
 const RanksSection = () => {
   const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
 
+  // Reverse the ranks order so Shogun is at the top (highest) and Ashigaru at bottom (lowest)
+  const timelineRanks = [...ranks].reverse();
+
   return (
     <motion.section id="ranks-section" className="relative py-32 overflow-hidden">
       {/* Background */}
@@ -151,7 +154,7 @@ const RanksSection = () => {
 
       <motion.div
         ref={intersectionRef as any}
-        className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8"
+        className="relative z-10 max-w-4xl mx-auto px-6 lg:px-8"
       >
         {/* Section header */}
         <motion.div
@@ -164,95 +167,107 @@ const RanksSection = () => {
             Climb the Code Dojo
           </h2>
           <p className="text-xl text-white/60 max-w-3xl mx-auto font-light leading-relaxed">
-            Progress through the medieval Japanese hierarchy. Earn your crest.
+            Progress through the medieval Japanese hierarchy. From Ashigaru to Shogun.
           </p>
         </motion.div>
 
-        {/* Ranks grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-16">
-          {ranks.map((rank, index) => (
-            <motion.div
-              key={rank.name}
-              initial={{ opacity: 0, y: 40 }}
-              animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="group"
-            >
-              <div className="bg-gradient-to-b from-white/[0.02] to-white/[0.01] rounded-[18px] p-7 shadow-depth-lg h-full text-center relative overflow-visible">
-                {/* Japanese glyph */}
-                <div className="text-[28px] mb-[18px] opacity-95 tracking-wider">
-                  {rank.icon}
-                </div>
+        {/* Timeline Container */}
+        <div className="relative">
+          {/* Vertical Timeline Line */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 rounded-full"></div>
 
-                {/* Rank Badge/Orb */}
-                <div className="relative mx-auto mb-4">
-                  {/* Glowing ring */}
+          {/* Timeline Items */}
+          <div className="space-y-16">
+            {timelineRanks.map((rank, index) => (
+              <motion.div
+                key={rank.name}
+                initial={{ opacity: 0, y: 40 }}
+                animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: index * 0.15 }}
+                className={`relative flex items-center ${
+                  index % 2 === 0 ? "flex-row" : "flex-row-reverse"
+                }`}
+              >
+                {/* Timeline Node */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                   <div
-                    className="absolute inset-[-8px] rounded-full blur-[12px] opacity-95 z-0"
-                    style={{ background: rank.ringGradient }}
-                  />
-
-                  {/* Main orb with badge */}
-                  <div
-                    className="relative w-[84px] h-[84px] rounded-full grid place-items-center font-bold text-lg z-10 mx-auto shadow-depth-md"
+                    className="w-16 h-16 rounded-full flex items-center justify-center shadow-depth-md border-4 border-white/10"
                     style={{
                       background: rank.orbBg,
                       color: rank.orbColor,
                     }}
                   >
-                    {rank.badge}
+                    <div className="text-xl font-bold">{rank.icon}</div>
+                  </div>
+                  
+                  {/* Glow effect */}
+                  <div
+                    className="absolute inset-0 rounded-full blur-md opacity-50 -z-10"
+                    style={{ background: rank.glowColors }}
+                  />
+                </div>
+
+                {/* Content Card */}
+                <div className={`w-5/12 ${index % 2 === 0 ? "mr-auto pr-8" : "ml-auto pl-8"}`}>
+                  <div className="bg-gradient-to-b from-white/[0.08] to-white/[0.02] rounded-2xl p-6 shadow-depth-lg backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300">
+                    {/* Rank Level Indicator */}
+                    <div className="flex items-center justify-between mb-4">
+                      <span 
+                        className="text-sm font-medium px-3 py-1 rounded-full"
+                        style={{ 
+                          background: `${rank.orbBg}40`,
+                          color: rank.titleColor 
+                        }}
+                      >
+                        Level {rank.rank}
+                      </span>
+                      <div className="text-2xl opacity-80">{rank.badge}</div>
+                    </div>
+
+                    {/* Rank Name */}
+                    <h3
+                      className="text-2xl font-bold mb-3 tracking-wide"
+                      style={{ color: rank.titleColor }}
+                    >
+                      {rank.name}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-white/70 text-sm leading-relaxed">
+                      {rank.description}
+                    </p>
+
+                    {/* Progress Indicator */}
+                    <div className="mt-4 flex items-center gap-2">
+                      {[...Array(rank.rank)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-2 h-2 rounded-full"
+                          style={{ background: rank.titleColor, opacity: 0.6 }}
+                        />
+                      ))}
+                      {[...Array(5 - rank.rank)].map((_, i) => (
+                        <div
+                          key={i + rank.rank}
+                          className="w-2 h-2 rounded-full bg-white/20"
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Title */}
-                <h3
-                  className="text-lg font-bold mb-[6px] tracking-wide"
-                  style={{ color: rank.titleColor }}
-                >
-                  {rank.name}
-                </h3>
-
-                {/* Description */}
-                <p className="text-[13px] text-white/60 mb-[14px] leading-relaxed">
-                  {rank.description}
-                </p>
-
-                {/* Bottom glow effect */}
-                <div
-                  className="absolute left-1/2 -translate-x-1/2 bottom-[-20px] w-[70%] h-[46px] rounded-full opacity-[0.06] blur-[18px] pointer-events-none z-[1]"
-                  style={{ background: rank.glowColors }}
-                />
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Featured Shogun card */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="w-full"
-        >
-          <div className="bg-gradient-to-b from-white/[0.02] to-white/[0.01] rounded-3xl p-12 shadow-depth-xl text-center relative overflow-hidden">
-            {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-purple-600/10 to-transparent rounded-3xl" />
-
-            <div className="relative z-10">
-              <div className="text-6xl mb-8 text-white/90">将</div>
-              <h3 className="text-5xl font-display font-light mb-4 bg-gradient-to-r from-white via-indigo-200 to-purple-200 bg-clip-text text-transparent">
-                Shogun
-              </h3>
-              <p className="text-white/70 text-xl mb-8 font-light max-w-2xl mx-auto">
-                The pinnacle of coding mastery. Supreme warlord commanding
-                respect across all battlefields.
-              </p>
-              <div className="inline-flex items-center px-8 py-4 rounded-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20 text-indigo-200 text-lg font-light shadow-depth-md">
-                10,000+ points required
-              </div>
-            </div>
+                {/* Achievement Badge for Shogun */}
+                {rank.name === "Shōgun" && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 text-yellow-300 px-4 py-2 rounded-full text-xs font-medium border border-yellow-400/30">
+                      ⚡ Master Rank
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </motion.section>
   );

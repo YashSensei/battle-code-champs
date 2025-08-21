@@ -114,7 +114,7 @@ const FAQSection = () => {
   };
 
   return (
-    <section className="relative py-32 overflow-hidden -mt-1">
+    <section id="faq-section" className="relative py-32 overflow-hidden -mt-1">
       {/* Seamless background blend */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0D0F1A] via-[#050609] to-[#020306] -z-10" />
 
