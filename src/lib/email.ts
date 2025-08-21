@@ -26,7 +26,6 @@ export async function sendWaitlistAcknowledgement(
     );
     return;
   }
-
   const templateParams: WaitlistTemplateParams = {
     to_email: userEmail,
     email: userEmail,
