@@ -1,63 +1,146 @@
-import { useParallax } from '@/hooks/useParallax';
-import { Button } from '@/components/ui/button';
-import heroImage from '@/assets/hero-battle-arena.jpg';
+import { motion } from "framer-motion";
+import { useIntersectionObserver } from "@/hooks/useParallax";
 
 const HeroSection = () => {
-  const scrollY = useParallax();
+  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Parallax Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-          transform: `translateY(${scrollY * 0.5}px)`,
-        }}
-      />
-      
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-background/80" />
-      
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-blue/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-cyan/5 rounded-full blur-3xl animate-glow-pulse" />
-      </div>
+    <section
+      ref={intersectionRef as any}
+      className="relative overflow-hidden min-h-screen flex items-center"
+    >
+      {/* Background with enhanced gradients - same as ComingSoonSection */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050609] via-[#0A0B14] to-[#0D0F1A] -z-10" />
 
-      {/* Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-        <div className="animate-fade-in-up">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-cyan bg-clip-text text-transparent animate-text-glow">
-            CODE BETS
-          </h1>
-          <div className="h-1 w-32 bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-8 rounded-full" />
-        </div>
-        
-        <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          <h2 className="text-2xl md:text-4xl font-semibold mb-6 text-foreground">
-            Welcome to the <span className="text-neon-cyan">Ultimate</span> Platform
-          </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-            Where competitive programmers engage in <span className="text-neon-purple font-semibold">1v1 code duels</span>. 
-            Battle it out in real-time coding challenges, climb the ranks, and prove your coding supremacy in the most 
-            <span className="text-neon-blue font-semibold"> gamified programming arena</span> ever created.
-          </p>
-        </div>
+      {/* Multiple background glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] rounded-full bg-gradient-to-r from-indigo-600/15 to-purple-600/15 blur-[140px] -z-10" />
+      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/10 blur-[100px] -z-10" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradie¸nt-to-tl from-blue-500/12 to-indigo-500/12 blur-[80px] -z-10" />
 
-        <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <Button variant="hero" size="lg" className="text-lg px-8 py-4">
-            Enter the Arena
-          </Button>
-        </div>
+      <div className="mx-auto max-w-5xl px-6 lg:px-8 text-center relative z-10 py-32">
+        {/* Main heading */}
+        <motion.h1
+          className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-light tracking-tighter text-white mb-8 leading-[0.9]"
+          initial={{ opacity: 0, y: 40 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+        >
+          Master Code.
+          <br />
+          <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-400 bg-clip-text text-transparent font-medium">
+            Beat Rivals.
+          </span>
+        </motion.h1>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-neon-cyan rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-neon-cyan rounded-full mt-2 animate-pulse" />
+        {/* Subtitle */}
+        <motion.p
+          className="text-xl md:text-2xl text-white/60 mb-16 max-w-3xl mx-auto font-light leading-relaxed"
+          initial={{ opacity: 0, y: 30 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+        >
+          The ultimate platform for competitive programming duels. Clean code,
+          fair battles, instant results.
+        </motion.p>
+
+        {/* Feature preview cards */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 50 }}
+          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, delay: 0.6 }}
+        >
+          {/* Card 1: Challenge Engine */}
+          <div className="glass-dark glass-hover card-float p-8 md:p-10 text-left shadow-depth-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600/30 to-purple-600/30 flex items-center justify-center shadow-depth-sm">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2L22 8.5V15.5L12 22L2 15.5V8.5L12 2Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    fill="none"
+                  />
+                  <path d="M12 8V16" stroke="currentColor" strokeWidth="2" />
+                  <path d="M8 10L16 14" stroke="currentColor" strokeWidth="2" />
+                  <path d="M8 14L16 10" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-display font-semibold text-white">
+                Smart Challenge Engine
+              </h3>
+            </div>
+            <p className="text-white/70 mb-6">
+              Auto-generated test cases, real-time validation, and intelligent
+              difficulty scaling for perfectly balanced duels.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="px-3 py-2 rounded-lg bg-white/5 text-white/80 text-sm shadow-depth-sm">
+                Instant feedback
+              </div>
+              <div className="px-3 py-2 rounded-lg bg-white/5 text-white/80 text-sm shadow-depth-sm">
+                Fair matching
+              </div>
+            </div>
           </div>
-        </div>
+
+          {/* Card 2: Real-time Duels */}
+          <div className="glass-dark glass-hover card-float p-8 md:p-10 text-left shadow-depth-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600/30 to-indigo-600/30 flex items-center justify-center shadow-depth-sm">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2L2 7L12 12L22 7L12 2Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    fill="none"
+                  />
+                  <path
+                    d="M2 17L12 22L22 17"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M2 12L12 17L22 12"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-display font-semibold text-white">
+                Live Battle Arena
+              </h3>
+            </div>
+            <p className="text-white/70 mb-6">
+              Face opponents in real-time with synchronized timers, live code
+              execution, and instant ranking updates.
+            </p>
+            <div className="bg-white/5 rounded-xl p-4 shadow-depth-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white/80 text-sm">Current Duel</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-red-400" />
+                  <span className="text-white/60 text-xs">08:42 left</span>
+                </div>
+              </div>
+              <div className="text-white/60 text-sm">
+                Python • Data Structures
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
