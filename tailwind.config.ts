@@ -185,8 +185,8 @@ const config: Config = {
             {},
         },
         ".glass-navbar": {
-          "@apply bg-panel-dark/80 backdrop-blur-[10px] backdrop-saturate-150 ring-1 ring-white/10 shadow-glass-depth":
-            {},
+          "background": "linear-gradient(135deg, rgba(10, 11, 20, 0.8) 0%, rgba(13, 15, 26, 0.8) 50%, rgba(5, 6, 9, 0.8) 100%)",
+          "@apply backdrop-blur-[10px] backdrop-saturate-150 ring-1 ring-white/10 shadow-glass-depth": {},
         },
         ".glass-hover": {
           "@apply hover:shadow-glass-hover transition-all duration-300": {},
