@@ -1,16 +1,7 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
+import { useRef, memo } from "react";
 import { useIntersectionObserver } from "@/hooks/useParallax";
 
 const points = [
-  {
-    value: "-10",
-    title: "Learn from Defeat",
-    description:
-      "Minimal point loss keeps you motivated. Every defeat teaches valuable lessons.",
-    icon: "⚡",
-    iconBg: "from-indigo-600/30 to-purple-600/30",
-  },
   {
     value: "+10",
     title: "Victory Rewards",
@@ -27,10 +18,55 @@ const points = [
     icon: "🎯",
     iconBg: "from-indigo-600/30 to-purple-600/30",
   },
+  {
+    value: "-10",
+    title: "Learn from Defeat",
+    description:
+      "Minimal point loss keeps you motivated. Every defeat teaches valuable lessons.",
+    icon: "⚡",
+    iconBg: "from-indigo-600/30 to-purple-600/30",
+  },
 ];
 
+// Memoized point card component
+const PointCard = memo(({ point }: { point: (typeof points)[0] }) => (
+  <div
+    className="glass-dark rounded-2xl p-8 shadow-depth-lg h-full"
+    style={{
+      contain: "layout style paint",
+      willChange: "transform",
+      transform: "translateZ(0)",
+    }}
+  >
+    <div className="relative z-10">
+      {/* Icon */}
+      <div
+        className={`w-16 h-16 rounded-xl bg-gradient-to-br ${point.iconBg} flex items-center justify-center mb-6 shadow-lg`}
+      >
+        <span className="text-2xl">{point.icon}</span>
+      </div>
+
+      {/* Value */}
+      <div className="mb-6">
+        <span className="text-4xl md:text-5xl font-display font-light text-white tracking-tight">
+          {point.value}
+        </span>
+        <span className="text-white/60 text-lg ml-2">points</span>
+      </div>
+
+      {/* Content */}
+      <h3 className="text-xl font-medium text-white mb-3">{point.title}</h3>
+      <p className="text-white/60 leading-relaxed font-light">
+        {point.description}
+      </p>
+    </div>
+  </div>
+));
+
+PointCard.displayName = "PointCard";
+
 const PointsSection = () => {
-  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
+  const { ref: intersectionRef } = useIntersectionObserver(0.1);
 
   return (
     <section
@@ -43,17 +79,12 @@ const PointsSection = () => {
       {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-gradient-to-r from-indigo-600/5 to-purple-600/5 blur-[100px] -z-10" />
 
-      <motion.div
+      <div
         ref={intersectionRef as any}
         className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8"
       >
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
+        <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-6">
             Point System
           </h2>
@@ -61,49 +92,15 @@ const PointsSection = () => {
             Participate in matches, compete with the best, and watch your
             ranking soar.
           </p>
-        </motion.div>
+        </div>
 
         {/* Points grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {points.map((point, index) => (
-            <motion.div
-              key={point.title}
-              initial={{ opacity: 0, y: 40 }}
-              animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-            >
-              <div className="glass-dark rounded-2xl p-8 shadow-depth-lg h-full">
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div
-                    className={`w-16 h-16 rounded-xl bg-gradient-to-br ${point.iconBg} flex items-center justify-center mb-6 shadow-lg`}
-                  >
-                    <span className="text-2xl">{point.icon}</span>
-                  </div>
-
-                  {/* Value */}
-                  <div className="mb-6">
-                    <span className="text-4xl md:text-5xl font-display font-light text-white tracking-tight">
-                      {point.value}
-                    </span>
-                    <span className="text-white/60 text-lg ml-2">points</span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-medium mb-4 text-white font-display">
-                    {point.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-white/60 font-light leading-relaxed text-sm">
-                    {point.description}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
+          {points.map((point) => (
+            <PointCard key={point.title} point={point} />
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };

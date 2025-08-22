@@ -105,7 +105,7 @@
 /* Section transitions */
 .section-fade-in {
   animation: sectionFadeIn 0.5s ease-out forwards;
-  }
+}
 
 @keyframes sectionFadeIn {
   from {
@@ -120,9 +120,9 @@
 
 /* Staggered children animation */
 .stagger-children > * {
-    opacity: 0;
+  opacity: 0;
   transform: translateY(10px);
-  }
+}
 
 .stagger-children > *:nth-child(1) {
   animation: staggerFade 0.4s 0.1s ease-out forwards;
@@ -159,4 +159,54 @@ main {
 /* Ensure consistent dark theming */
 .min-h-screen {
   min-height: 100vh;
+}
+
+/* Performance optimizations for cards */
+.card-container {
+  contain: layout style paint;
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+.glass-dark {
+  contain: layout style;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Optimize rendering for rank cards */
+.rank-card {
+  contain: layout style paint;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize backdrop blur performance */
+@supports (backdrop-filter: blur(0)) {
+  .backdrop-blur-xl {
+    backdrop-filter: blur(20px);
+  }
+  .backdrop-blur-\[24px\] {
+    backdrop-filter: blur(24px);
+  }
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(0)) {
+  .backdrop-blur-xl,
+  .backdrop-blur-\[24px\] {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

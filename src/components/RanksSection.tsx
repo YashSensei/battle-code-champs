@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
+import { useRef, useMemo } from "react";
 import { useIntersectionObserver } from "@/hooks/useParallax";
 import { Badge } from "@/components/ui/badge";
 
@@ -139,61 +138,70 @@ const ranks = [
 ];
 
 const RanksSection = () => {
-  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
+  const { ref: intersectionRef } = useIntersectionObserver(0.1);
 
-  // Reverse the ranks order so Shogun is at the top (highest) and Ashigaru at bottom (lowest)
-  const timelineRanks = [...ranks].reverse();
+  // Display ranks in ascending order (Ashigaru → Shōgun) - memoized for performance
+  const timelineRanks = useMemo(
+    () => [...ranks].sort((a, b) => a.rank - b.rank),
+    []
+  );
 
   return (
-    <motion.section id="ranks-section" className="relative py-32 overflow-hidden">
+    <section id="ranks-section" className="relative py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0D0F1A] via-[#0A0B14] to-[#050609] -z-10" />
 
       {/* Subtle glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] rounded-full bg-gradient-to-r from-indigo-600/8 to-purple-600/8 blur-[120px] -z-10" />
 
-      <motion.div
+      <div
         ref={intersectionRef as any}
         className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12 sm:mb-16 lg:mb-20"
-        >
+        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-4 sm:mb-6">
             Climb the Code Dojo
           </h2>
           <p className="text-lg sm:text-xl text-white/60 max-w-3xl mx-auto font-light leading-relaxed px-4">
-            Progress through the medieval Japanese hierarchy. From Ashigaru to Shogun.
+            Progress through the medieval Japanese hierarchy. From Ashigaru to
+            Shogun.
           </p>
-        </motion.div>
+        </div>
 
         {/* Timeline Container - Mobile First */}
         <div className="relative">
-          {/* Vertical Timeline Line - Hidden on mobile, visible on larger screens */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 rounded-full"></div>
+          {/* Enhanced Vertical Timeline Line */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-0">
+            <div className="w-[2px] h-full bg-gradient-to-b from-white/40 via-white/25 to-white/10 rounded-full" />
+          </div>
+
+          {/* Mobile Vertical Connecting Line */}
+          <div className="md:hidden absolute left-8 top-0 bottom-0 w-[2px] z-0">
+            <div className="h-full bg-gradient-to-b from-white/40 via-white/25 to-white/10 rounded-full" />
+          </div>
 
           {/* Timeline Items */}
           <div className="space-y-8 md:space-y-16">
             {timelineRanks.map((rank, index) => (
-              <motion.div
-                key={rank.name}
-                initial={{ opacity: 0, y: 40 }}
-                animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, delay: index * 0.15 }}
-                className="relative"
-              >
+              <div key={rank.name} className="relative">
                 {/* Mobile Layout (Stack vertically) */}
                 <div className="md:hidden">
-                  <div className="bg-gradient-to-b from-white/[0.08] to-white/[0.02] rounded-2xl p-4 sm:p-6 shadow-depth-lg backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300">
+                  <div className="relative bg-white/[0.05] rounded-3xl p-6 shadow-[0_12px_24px_rgba(0,0,0,0.15),0_4px_8px_rgba(0,0,0,0.1)] backdrop-blur-[24px] transform-gpu ml-16">
+                    {/* Connecting line to timeline */}
+                    <div className="absolute -left-16 top-8 w-16 h-[2px] bg-gradient-to-r from-white/40 to-transparent" />
+                    {/* Mobile timeline node */}
+                    <div
+                      className="absolute -left-[4.5rem] top-6 w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.2)] backdrop-blur-sm bg-white/[0.08]"
+                      style={{ background: rank.orbBg, color: rank.orbColor }}
+                    >
+                      <div className="text-sm font-bold">{rank.icon}</div>
+                    </div>
                     {/* Mobile Header */}
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center shadow-depth-md border-2 border-white/10"
+                          className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.1)] backdrop-blur-sm bg-white/[0.08] relative overflow-hidden"
                           style={{
                             background: rank.orbBg,
                             color: rank.orbColor,
@@ -202,118 +210,126 @@ const RanksSection = () => {
                           <div className="text-lg font-bold">{rank.icon}</div>
                         </div>
                         <div>
-                          <span 
-                            className="text-xs font-medium px-2 py-1 rounded-full block mb-1"
-                            style={{ 
-                              background: `${rank.orbBg}40`,
-                              color: rank.titleColor 
-                            }}
+                          <span
+                            className="text-xs font-medium px-3 py-1 rounded-full block mb-1 bg-white/[0.08] shadow-[0_2px_4px_rgba(0,0,0,0.1)] backdrop-blur-sm"
+                            style={{ color: rank.titleColor }}
                           >
                             Level {rank.rank}
                           </span>
                           <h3
-                            className="text-lg font-bold tracking-wide"
+                            className="text-xl font-semibold tracking-wide"
                             style={{ color: rank.titleColor }}
                           >
                             {rank.name}
                           </h3>
                         </div>
                       </div>
-                      <div className="text-xl opacity-80">{rank.badge}</div>
+                      <div className="text-2xl opacity-80">{rank.badge}</div>
                     </div>
 
                     {/* Description */}
-                    <p className="text-white/70 text-sm leading-relaxed mb-4">
+                    <p className="text-white/60 text-sm leading-relaxed mb-6 font-light">
                       {rank.description}
                     </p>
 
-                    {/* Progress Indicator */}
-                    <div className="flex items-center gap-1.5">
-                      {[...Array(rank.rank)].map((_, i) => (
+                    {/* Progress Bar */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-white/50 font-medium">
+                          Progress
+                        </span>
+                        <span className="text-xs text-white/70 font-semibold">
+                          {rank.rank}/5
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
                         <div
-                          key={i}
-                          className="w-2 h-2 rounded-full"
-                          style={{ background: rank.titleColor, opacity: 0.6 }}
+                          className="h-full rounded-full"
+                          style={{
+                            background: rank.glowColors,
+                            width: `${(rank.rank / 5) * 100}%`,
+                          }}
                         />
-                      ))}
-                      {[...Array(5 - rank.rank)].map((_, i) => (
-                        <div
-                          key={i + rank.rank}
-                          className="w-2 h-2 rounded-full bg-white/20"
-                        />
-                      ))}
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Desktop Layout (Timeline) */}
-                <div className={`hidden md:flex items-center ${
-                  index % 2 === 0 ? "flex-row" : "flex-row-reverse"
-                }`}>
+                <div
+                  className={`hidden md:flex items-center ${
+                    index % 2 === 0 ? "flex-row" : "flex-row-reverse"
+                  }`}
+                >
                   {/* Timeline Node */}
                   <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                     <div
-                      className="w-16 h-16 rounded-full flex items-center justify-center shadow-depth-md border-4 border-white/10"
-                      style={{
-                        background: rank.orbBg,
-                        color: rank.orbColor,
-                      }}
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-[0_12px_24px_rgba(0,0,0,0.2),0_4px_8px_rgba(0,0,0,0.1)] backdrop-blur-sm bg-white/[0.08] relative overflow-hidden"
+                      style={{ background: rank.orbBg, color: rank.orbColor }}
                     >
-                      <div className="text-xl font-bold">{rank.icon}</div>
+                      <div className="text-xl font-bold z-10">{rank.icon}</div>
                     </div>
-                    
-                    {/* Glow effect */}
-                    <div
-                      className="absolute inset-0 rounded-full blur-md opacity-50 -z-10"
-                      style={{ background: rank.glowColors }}
-                    />
                   </div>
 
+                  {/* Connector from node to card */}
+                  <div
+                    className={`hidden md:block absolute top-1/2 h-[2px] ${
+                      index % 2 === 0
+                        ? "right-[calc(50%+2.5rem)] w-14 bg-gradient-to-l from-white/50 to-transparent"
+                        : "left-[calc(50%+2.5rem)] w-14 bg-gradient-to-r from-white/50 to-transparent"
+                    }`}
+                  />
+
                   {/* Content Card */}
-                  <div className={`w-5/12 ${index % 2 === 0 ? "mr-auto pr-8" : "ml-auto pl-8"}`}>
-                    <div className="bg-gradient-to-b from-white/[0.08] to-white/[0.02] rounded-2xl p-6 shadow-depth-lg backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300">
+                  <div
+                    className={`w-5/12 ${
+                      index % 2 === 0 ? "mr-auto pr-8" : "ml-auto pl-8"
+                    }`}
+                  >
+                    <div className="relative rounded-3xl p-8 bg-white/[0.05] shadow-[0_20px_32px_rgba(0,0,0,0.15),0_8px_16px_rgba(0,0,0,0.1)] backdrop-blur-[24px] transform-gpu">
                       {/* Rank Level Indicator */}
-                      <div className="flex items-center justify-between mb-4">
-                        <span 
-                          className="text-sm font-medium px-3 py-1 rounded-full"
-                          style={{ 
-                            background: `${rank.orbBg}40`,
-                            color: rank.titleColor 
-                          }}
+                      <div className="flex items-center justify-between mb-6">
+                        <span
+                          className="text-sm font-medium px-4 py-1.5 rounded-full bg-white/[0.08] shadow-[0_2px_4px_rgba(0,0,0,0.1)] backdrop-blur-sm"
+                          style={{ color: rank.titleColor }}
                         >
                           Level {rank.rank}
                         </span>
-                        <div className="text-2xl opacity-80">{rank.badge}</div>
+                        <div className="text-3xl opacity-80">{rank.badge}</div>
                       </div>
 
                       {/* Rank Name */}
                       <h3
-                        className="text-2xl font-bold mb-3 tracking-wide"
+                        className="text-3xl font-semibold mb-4 tracking-wide"
                         style={{ color: rank.titleColor }}
                       >
                         {rank.name}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-white/70 text-sm leading-relaxed">
+                      <p className="text-white/60 text-base leading-relaxed mb-6 font-light">
                         {rank.description}
                       </p>
 
-                      {/* Progress Indicator */}
-                      <div className="mt-4 flex items-center gap-2">
-                        {[...Array(rank.rank)].map((_, i) => (
+                      {/* Progress Bar */}
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-white/50 font-medium">
+                            Progress
+                          </span>
+                          <span className="text-sm text-white/70 font-semibold">
+                            {rank.rank}/5
+                          </span>
+                        </div>
+                        <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
                           <div
-                            key={i}
-                            className="w-2 h-2 rounded-full"
-                            style={{ background: rank.titleColor, opacity: 0.6 }}
+                            className="h-full rounded-full"
+                            style={{
+                              background: rank.glowColors,
+                              width: `${(rank.rank / 5) * 100}%`,
+                            }}
                           />
-                        ))}
-                        {[...Array(5 - rank.rank)].map((_, i) => (
-                          <div
-                            key={i + rank.rank}
-                            className="w-2 h-2 rounded-full bg-white/20"
-                          />
-                        ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -336,12 +352,12 @@ const RanksSection = () => {
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 };
 
