@@ -1,4 +1,8 @@
 import { useRef, useMemo, useEffect, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ranks = [
   {
@@ -138,7 +142,7 @@ const ranks = [
 const RanksSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [currentRankIndex, setCurrentRankIndex] = useState(0);
 
   // Display ranks in ascending order (Ashigaru → Shōgun) - memoized for performance
   const timelineRanks = useMemo(
@@ -147,57 +151,70 @@ const RanksSection = () => {
   );
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
+    if (!sectionRef.current || !containerRef.current) return;
 
-      const section = sectionRef.current;
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const sectionHeight = rect.height;
-      
-      // Calculate when section is centered in viewport
-      const sectionCenter = rect.top + sectionHeight / 2;
-      const viewportCenter = windowHeight / 2;
-      
-      // Only start animation when section center is near viewport center
-      const centerThreshold = windowHeight * 0.15; // Increased tolerance for smoother start
-      const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
-      
-      if (distanceFromCenter <= centerThreshold) {
-        // Section is centered, start the horizontal scroll animation
-        // Calculate progress based on how much we've scrolled past the center point
-        const scrolledPastCenter = viewportCenter - sectionCenter;
-        
-        // Much larger scroll distance needed for full animation (3x section height)
-        const maxScrollDistance = sectionHeight * 3;
-        
-        // Apply easing curve for smoother animation
-        const rawProgress = Math.max(0, Math.min(1, (scrolledPastCenter + maxScrollDistance/4) / maxScrollDistance));
-        
-        // Apply stronger ease-out curve for more gradual feeling
-        const easedProgress = 1 - Math.pow(1 - rawProgress, 3);
-        
-        setScrollProgress(easedProgress);
-      } else if (sectionCenter > viewportCenter + centerThreshold) {
-        // Section hasn't reached center yet
-        setScrollProgress(0);
-      } else if (sectionCenter < viewportCenter - centerThreshold) {
-        // Section has passed center completely
-        setScrollProgress(1);
+    const section = sectionRef.current;
+    const container = containerRef.current;
+
+    // Create horizontal scroll animation
+    const horizontalTween = gsap.to(container, {
+      x: () => -(container.scrollWidth - window.innerWidth),
+      ease: "none",
+      duration: 1
+    });
+
+    // Create scroll trigger for horizontal scroll
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: () => `+=${container.scrollWidth - window.innerWidth + window.innerHeight}`,
+      pin: true,
+      animation: horizontalTween,
+      scrub: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        // Update current rank index based on scroll progress
+        const progress = self.progress;
+        const newIndex = Math.min(
+          Math.floor(progress * timelineRanks.length),
+          timelineRanks.length - 1
+        );
+        setCurrentRankIndex(newIndex);
       }
+    });
+
+    // Animate individual rank cards
+    timelineRanks.forEach((_, index) => {
+      const rankCard = section.querySelector(`[data-rank="${index}"]`);
+      if (rankCard) {
+        gsap.set(rankCard, { scale: 0.8, opacity: 0.4 });
+        
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          end: () => `+=${container.scrollWidth - window.innerWidth + window.innerHeight}`,
+          scrub: 1,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const cardProgress = Math.max(0, Math.min(1, 
+              (progress * timelineRanks.length) - index + 0.5
+            ));
+            
+            gsap.to(rankCard, {
+              scale: cardProgress > 0.5 ? 1.1 : 0.8,
+              opacity: cardProgress > 0.3 ? 1 : 0.4,
+              duration: 0.3,
+              ease: "power2.out"
+            });
+          }
+        });
+      }
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial call
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Calculate which rank should be active based on scroll progress
-  const currentRankIndex = Math.min(
-    Math.floor(scrollProgress * timelineRanks.length),
-    timelineRanks.length - 1
-  );
+  }, [timelineRanks]);
 
   return (
     <section 
@@ -213,7 +230,7 @@ const RanksSection = () => {
 
       <div className="relative z-10 flex flex-col justify-center min-h-screen px-4 sm:px-6 lg:px-8 will-change-scroll">
         {/* Section header */}
-        <div className={`text-center mb-8 sm:mb-12 scroll-animate ${scrollProgress > 0 ? 'animate-in' : ''}`}>
+        <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-4 sm:mb-6">
             Climb the Code Dojo
           </h2>
@@ -226,17 +243,16 @@ const RanksSection = () => {
         <div className="relative w-full max-w-7xl mx-auto">
           <div 
             ref={containerRef}
-            className="flex transition-transform duration-[1500ms] ease-out will-change-scroll"
+            className="flex will-change-scroll"
             style={{ 
-              transform: `translateX(-${scrollProgress * (timelineRanks.length - 1) * (100 / timelineRanks.length)}%)`,
-              width: `${timelineRanks.length * 100}%`
+              width: `${timelineRanks.length * 100}vw`
             }}
           >
             {timelineRanks.map((rank, index) => (
               <div 
-                key={rank.name} 
-                className="flex-shrink-0 px-4 sm:px-8"
-                style={{ width: `${100 / timelineRanks.length}%` }}
+                key={rank.name}
+                data-rank={index}
+                className="flex-shrink-0 px-4 sm:px-8 w-screen"
               >
                 <div className="flex flex-col items-center text-center max-w-md mx-auto">
                   {/* Rank Icon */}
