@@ -153,21 +153,29 @@ const RanksSection = () => {
       const section = sectionRef.current;
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      
-      // Calculate scroll progress through this section
-      const sectionTop = rect.top;
       const sectionHeight = rect.height;
       
-      // Start animation when section enters viewport
-      const startOffset = windowHeight;
-      const endOffset = -sectionHeight;
+      // Calculate when section is centered in viewport
+      const sectionCenter = rect.top + sectionHeight / 2;
+      const viewportCenter = windowHeight / 2;
       
-      if (sectionTop <= startOffset && sectionTop >= endOffset) {
-        const progress = Math.max(0, Math.min(1, (startOffset - sectionTop) / (startOffset - endOffset)));
+      // Only start animation when section center is near viewport center
+      const centerThreshold = windowHeight * 0.1; // 10% tolerance
+      const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
+      
+      if (distanceFromCenter <= centerThreshold) {
+        // Section is centered, start the horizontal scroll animation
+        // Calculate progress based on how much we've scrolled past the center point
+        const scrolledPastCenter = viewportCenter - sectionCenter;
+        const maxScrollDistance = sectionHeight * 0.8; // Use 80% of section height for full animation
+        
+        const progress = Math.max(0, Math.min(1, (scrolledPastCenter + maxScrollDistance/2) / maxScrollDistance));
         setScrollProgress(progress);
-      } else if (sectionTop > startOffset) {
+      } else if (sectionCenter > viewportCenter + centerThreshold) {
+        // Section hasn't reached center yet
         setScrollProgress(0);
-      } else if (sectionTop < endOffset) {
+      } else if (sectionCenter < viewportCenter - centerThreshold) {
+        // Section has passed center completely
         setScrollProgress(1);
       }
     };
