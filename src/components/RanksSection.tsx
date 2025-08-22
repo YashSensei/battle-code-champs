@@ -245,14 +245,14 @@ const RanksSection = () => {
             ref={containerRef}
             className="flex will-change-scroll"
             style={{ 
-              width: `${timelineRanks.length * 100}vw`
+              width: `${timelineRanks.length * 35.59}vw`
             }}
           >
             {timelineRanks.map((rank, index) => (
               <div 
                 key={rank.name}
                 data-rank={index}
-                className="flex-shrink-0 px-4 sm:px-8 w-screen"
+                className="flex-shrink-0 px-4 sm:px-8 w-90vw"
               >
                 <div className="flex flex-col items-center text-center max-w-md mx-auto">
                   {/* Rank Icon */}
