@@ -166,7 +166,7 @@ const RanksSection = () => {
     // Create scroll trigger for horizontal scroll
     ScrollTrigger.create({
       trigger: section,
-      start: "top top",
+      start: "top 80px",
       end: () => `+=${container.scrollWidth - window.innerWidth + window.innerHeight}`,
       pin: true,
       animation: horizontalTween,
@@ -191,7 +191,7 @@ const RanksSection = () => {
         
         ScrollTrigger.create({
           trigger: section,
-          start: "top top",
+          start: "top 80px",
           end: () => `+=${container.scrollWidth - window.innerWidth + window.innerHeight}`,
           scrub: 1,
           onUpdate: (self) => {
