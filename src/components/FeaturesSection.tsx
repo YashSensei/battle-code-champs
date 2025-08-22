@@ -18,7 +18,7 @@ const FeatureCard = ({
       initial={{ opacity: 0, y: 30 }}
       animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, delay, ease: "easeOut" }}
-      className={`glass-dark glass-hover rounded-3xl p-8 shadow-depth-lg backdrop-blur-xl ${className}`}
+      className={`glass-dark glass-hover rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-depth-lg backdrop-blur-xl ${className}`}
     >
       {children}
     </motion.div>
@@ -29,39 +29,40 @@ const FeaturesSection = () => {
   const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
 
   return (
-    <section className="relative py-32 -mt-1">
+    <section className="relative py-20 sm:py-24 lg:py-32 -mt-1">
       {/* Blended background gradient - transitions from hero to points section */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0D0F1A] via-[#0A0B14] to-[#0F1117] -z-10" />
 
       <motion.div
         ref={intersectionRef as any}
-        className="mx-auto max-w-7xl px-6 lg:px-8"
+        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        {/* Section header */}
+        {/* Section header - Responsive */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="text-center mb-12 sm:mb-16 lg:mb-20"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-4 sm:mb-6">
             Powerful building blocks
           </h2>
-          <p className="text-xl text-white/60 max-w-3xl mx-auto font-light leading-relaxed">
+          <p className="text-lg sm:text-xl text-white/60 max-w-3xl mx-auto font-light leading-relaxed px-4">
             Everything you need for a competitive programming arena, crafted
             with modern design and cutting-edge technology.
           </p>
         </motion.div>
 
-        {/* Masonry grid layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* AI Challenge Handling - Large card */}
+        {/* Masonry grid layout - Responsive */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+          {/* AI Challenge Handling - Large card - Responsive */}
           <FeatureCard delay={0.1} className="lg:col-span-7">
-            <div className="flex items-start gap-6 mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600/30 to-purple-600/30 flex items-center justify-center shadow-depth-md">
+            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-600/30 to-purple-600/30 flex items-center justify-center shadow-depth-md flex-shrink-0">
                 <svg
-                  width="28"
-                  height="28"
+                  width="20"
+                  height="20"
+                  className="sm:w-6 sm:h-6 lg:w-7 lg:h-7"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -81,17 +82,17 @@ const FeaturesSection = () => {
                   />
                 </svg>
               </div>
-              <div>
-                <h3 className="text-2xl font-display font-medium text-white mb-3">
+              <div className="flex-1">
+                <h3 className="text-xl sm:text-2xl font-display font-medium text-white mb-2 sm:mb-3">
                   AI Challenge Handling
                 </h3>
-                <p className="text-white/70 text-lg font-light leading-relaxed">
+                <p className="text-white/70 text-sm sm:text-base lg:text-lg font-light leading-relaxed">
                   Upload or paste problems; we auto-generate comprehensive tests
                   and validate solutions with intelligent analysis.
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {[
                 {
                   label: "Unit Tests",
@@ -116,15 +117,15 @@ const FeaturesSection = () => {
               ].map((item, index) => (
                 <div
                   key={item.label}
-                  className={`rounded-2xl p-4 shadow-depth-sm ${
+                  className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-depth-sm transition-all duration-300 hover:shadow-depth-md ${
                     index % 2 === 0
                       ? "bg-gradient-to-br from-indigo-600/15 to-purple-600/15"
                       : "bg-gradient-to-br from-purple-600/15 to-indigo-600/15"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`text-lg ${item.color}`}>{item.icon}</span>
-                    <span className="text-white font-medium">{item.label}</span>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <span className={`text-base sm:text-lg ${item.color} flex-shrink-0`}>{item.icon}</span>
+                    <span className="text-white font-medium text-sm sm:text-base">{item.label}</span>
                   </div>
                 </div>
               ))}
