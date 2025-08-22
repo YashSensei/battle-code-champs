@@ -14,6 +14,8 @@ export type WaitlistTemplateParams = {
 export async function sendWaitlistAcknowledgement(
   userEmail: string
 ): Promise<void> {
+  console.log("Starting email send process for:", userEmail);
+  
   const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID as
     | string
     | undefined;
@@ -24,11 +26,24 @@ export async function sendWaitlistAcknowledgement(
     | string
     | undefined;
 
+  console.log("EmailJS Config Check:", {
+    hasServiceId: !!serviceId,
+    hasTemplateId: !!templateId,
+    hasPublicKey: !!publicKey,
+    serviceId: serviceId ? serviceId.substring(0, 5) + "..." : "missing",
+    templateId: templateId ? templateId.substring(0, 5) + "..." : "missing",
+    publicKey: publicKey ? publicKey.substring(0, 5) + "..." : "missing"
+  });
+
   if (!serviceId || !templateId || !publicKey) {
-    console.warn(
-      "EmailJS environment variables are not set. Skipping email send."
-    );
-    return;
+    const missingVars = [];
+    if (!serviceId) missingVars.push("VITE_EMAILJS_SERVICE_ID");
+    if (!templateId) missingVars.push("VITE_EMAILJS_TEMPLATE_ID");
+    if (!publicKey) missingVars.push("VITE_EMAILJS_PUBLIC_KEY");
+    
+    const errorMsg = `EmailJS environment variables are missing: ${missingVars.join(", ")}. Please check your .env file.`;
+    console.error(errorMsg);
+    throw new Error(errorMsg);
   }
   const templateParams: WaitlistTemplateParams = {
     to_email: userEmail,
@@ -60,5 +75,30 @@ The Code Bets Team`,
   };
 
   // EmailJS v4 supports passing an options object for the public key
-  await emailjs.send(serviceId, templateId, templateParams, { publicKey });
+  try {
+    console.log("Sending email with template:", {
+      serviceId,
+      templateId,
+      userEmail
+    });
+
+    const result = await emailjs.send(serviceId, templateId, templateParams, { publicKey });
+
+    console.log("EmailJS send result:", result);
+    
+    if (result.status !== 200) {
+      throw new Error(`EmailJS returned status ${result.status}: ${result.text}`);
+    }
+    
+    console.log("Email sent successfully!");
+    
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error(`Unknown error occurred while sending email: ${String(error)}`);
+    }
+  }
 }
