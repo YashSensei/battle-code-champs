@@ -1,8 +1,7 @@
-import { motion } from "framer-motion";
 import { useIntersectionObserver } from "@/hooks/useParallax";
 
 const HeroSection = () => {
-  const { ref: intersectionRef, hasIntersected } = useIntersectionObserver(0.1);
+  const { ref: intersectionRef } = useIntersectionObserver(0.1);
 
   return (
     <section
@@ -19,37 +18,22 @@ const HeroSection = () => {
 
       <div className="mx-auto max-w-5xl px-6 lg:px-8 text-center relative z-10 py-32">
         {/* Main heading */}
-        <motion.h1
-          className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-light tracking-tighter text-white mb-8 leading-[0.9]"
-          initial={{ opacity: 0, y: 40 }}
-          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-        >
+        <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-light tracking-tighter text-white mb-8 leading-[0.9]">
           Master Code.
           <br />
           <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-400 bg-clip-text text-transparent font-medium">
             Beat Rivals.
           </span>
-        </motion.h1>
+        </h1>
 
         {/* Subtitle */}
-        <motion.p
-          className="text-xl md:text-2xl text-white/60 mb-16 max-w-3xl mx-auto font-light leading-relaxed"
-          initial={{ opacity: 0, y: 30 }}
-          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-        >
+        <p className="text-xl md:text-2xl text-white/60 mb-16 max-w-3xl mx-auto font-light leading-relaxed">
           The ultimate platform for competitive programming duels. Clean code,
           fair battles, instant results.
-        </motion.p>
+        </p>
 
         {/* Feature preview cards */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 50 }}
-          animate={hasIntersected ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, delay: 0.6 }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Card 1: Challenge Engine */}
           <div className="glass-dark glass-hover card-float p-8 md:p-10 text-left shadow-depth-lg">
             <div className="flex items-center gap-3 mb-4">
@@ -140,7 +124,7 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -18,24 +17,18 @@ const Navbar = () => {
     const element = document.getElementById(elementId);
     if (element) {
       element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+        behavior: "smooth",
+        block: "start",
       });
     }
   };
 
   const scrollToFooter = () => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
   return (
-    <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+    <header
       className={`fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 ${
         scrolled ? "py-3" : "py-4"
       }`}
@@ -64,7 +57,7 @@ const Navbar = () => {
               </svg>
             </div>
             <span className="font-display text-xl text-white font-medium tracking-tight">
-              codebets
+              CodeBets
             </span>
           </div>
 
@@ -89,7 +82,7 @@ const Navbar = () => {
               Contact
             </button>
             <button
-              onClick={() => smoothScrollTo('faq-section')}
+              onClick={() => smoothScrollTo("faq-section")}
               className="text-white/70 hover:text-white transition-colors"
             >
               FAQ
@@ -102,8 +95,8 @@ const Navbar = () => {
               variant="outline"
               className="h-9 px-4 rounded-full border-white/15 text-white hover:bg-white/10 hover:border-white/20 button-depth"
               onClick={() => {
-                const element = document.getElementById('early-access-section');
-                element?.scrollIntoView({ behavior: 'smooth' });
+                const element = document.getElementById("early-access-section");
+                element?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Early Access
@@ -111,7 +104,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 };
 

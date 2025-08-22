@@ -15,7 +15,7 @@ export async function sendWaitlistAcknowledgement(
   userEmail: string
 ): Promise<void> {
   console.log("Starting email send process for:", userEmail);
-  
+
   const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID as
     | string
     | undefined;
@@ -32,7 +32,7 @@ export async function sendWaitlistAcknowledgement(
     hasPublicKey: !!publicKey,
     serviceId: serviceId ? serviceId.substring(0, 5) + "..." : "missing",
     templateId: templateId ? templateId.substring(0, 5) + "..." : "missing",
-    publicKey: publicKey ? publicKey.substring(0, 5) + "..." : "missing"
+    publicKey: publicKey ? publicKey.substring(0, 5) + "..." : "missing",
   });
 
   if (!serviceId || !templateId || !publicKey) {
@@ -40,8 +40,10 @@ export async function sendWaitlistAcknowledgement(
     if (!serviceId) missingVars.push("VITE_EMAILJS_SERVICE_ID");
     if (!templateId) missingVars.push("VITE_EMAILJS_TEMPLATE_ID");
     if (!publicKey) missingVars.push("VITE_EMAILJS_PUBLIC_KEY");
-    
-    const errorMsg = `EmailJS environment variables are missing: ${missingVars.join(", ")}. Please check your .env file.`;
+
+    const errorMsg = `EmailJS environment variables are missing: ${missingVars.join(
+      ", "
+    )}. Please check your .env file.`;
     console.error(errorMsg);
     throw new Error(errorMsg);
   }
@@ -79,26 +81,31 @@ The Code Bets Team`,
     console.log("Sending email with template:", {
       serviceId,
       templateId,
-      userEmail
+      userEmail,
     });
 
-    const result = await emailjs.send(serviceId, templateId, templateParams, { publicKey });
+    const result = await emailjs.send(serviceId, templateId, templateParams, {
+      publicKey,
+    });
 
     console.log("EmailJS send result:", result);
-    
+
     if (result.status !== 200) {
-      throw new Error(`EmailJS returned status ${result.status}: ${result.text}`);
+      throw new Error(
+        `EmailJS returned status ${result.status}: ${result.text}`
+      );
     }
-    
+
     console.log("Email sent successfully!");
-    
   } catch (error) {
     console.error("Failed to send email:", error);
-    
+
     if (error instanceof Error) {
       throw error;
     } else {
-      throw new Error(`Unknown error occurred while sending email: ${String(error)}`);
+      throw new Error(
+        `Unknown error occurred while sending email: ${String(error)}`
+      );
     }
   }
 }
