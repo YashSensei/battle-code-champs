@@ -1,26 +1,13 @@
-import { useScrollAnimation, useParallaxScroll } from "@/hooks/useScrollAnimation";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const HeroSection = () => {
   const { ref: heroRef, isVisible } = useScrollAnimation(0.2);
-  const { ref: parallaxRef, offset } = useParallaxScroll(0.3);
 
   return (
     <section
       ref={heroRef as any}
-      className="relative overflow-hidden min-h-screen flex items-center"
+      className="relative min-h-screen flex items-center"
     >
-      {/* Background with enhanced gradients - same as ComingSoonSection */}
-      <div 
-        ref={parallaxRef as any}
-        className="absolute inset-0 bg-gradient-to-b from-[#050609] via-[#0A0B14] to-[#0D0F1A] -z-10 parallax-element"
-        style={{ transform: `translateY(${offset}px)` }}
-      />
-
-      {/* Multiple background glows */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] rounded-full bg-gradient-to-r from-indigo-600/15 to-purple-600/15 blur-[140px] -z-10" />
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/10 blur-[100px] -z-10" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-blue-500/12 to-indigo-500/12 blur-[80px] -z-10" />
-
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className={`scroll-animate ${isVisible ? 'animate-in' : ''}`}>
           <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-light tracking-tighter text-white mb-6 leading-[1.1]">
