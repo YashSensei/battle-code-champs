@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useScrollAnimation, useStaggeredAnimation } from "@/hooks/useScrollAnimation";
 
 const points = [
   {
@@ -65,6 +66,8 @@ const PointCard = memo(({ point }: { point: (typeof points)[0] }) => (
 PointCard.displayName = "PointCard";
 
 const PointsSection = () => {
+  const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
+  const { ref: cardsRef, visibleItems } = useStaggeredAnimation(4, 200);
 
   return (
     <section

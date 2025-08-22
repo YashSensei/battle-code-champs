@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useScrollAnimation, useStaggeredAnimation } from "@/hooks/useScrollAnimation";
 
 const faqData = [
   {
@@ -78,6 +79,8 @@ const FAQItem = ({
 
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
+  const { ref: faqRef, visibleItems } = useStaggeredAnimation(faqData.length, 100);
 
   const toggleQuestion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);

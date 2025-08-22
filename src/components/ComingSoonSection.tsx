@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { sendWaitlistAcknowledgement } from "@/lib/email";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const ComingSoonSection = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
 
   const isValidEmail = (value: string) =>
     /[^\s@]+@[^\s@]+\.[^\s@]+/.test(value);

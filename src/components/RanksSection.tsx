@@ -196,9 +196,9 @@ const RanksSection = () => {
       {/* Subtle glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] rounded-full bg-gradient-to-r from-indigo-600/8 to-purple-600/8 blur-[120px] -z-10" />
 
-      <div className="relative z-10 flex flex-col justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 flex flex-col justify-center min-h-screen px-4 sm:px-6 lg:px-8 will-change-scroll">
         {/* Section header */}
-        <div className="text-center mb-8 sm:mb-12">
+        <div className={`text-center mb-8 sm:mb-12 scroll-animate ${scrollProgress > 0 ? 'animate-in' : ''}`}>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light tracking-tighter text-white mb-4 sm:mb-6">
             Climb the Code Dojo
           </h2>
@@ -211,7 +211,7 @@ const RanksSection = () => {
         <div className="relative w-full max-w-7xl mx-auto">
           <div 
             ref={containerRef}
-            className="flex transition-transform duration-300 ease-out"
+            className="flex transition-transform duration-700 ease-out will-change-scroll"
             style={{ 
               transform: `translateX(-${scrollProgress * (timelineRanks.length - 1) * (100 / timelineRanks.length)}%)`,
               width: `${timelineRanks.length * 100}%`
@@ -226,7 +226,7 @@ const RanksSection = () => {
                 <div className="flex flex-col items-center text-center max-w-md mx-auto">
                   {/* Rank Icon */}
                   <div 
-                    className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-3xl flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-sm mb-6 sm:mb-8 transition-all duration-500"
+                    className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-3xl flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-sm mb-6 sm:mb-8 transition-all duration-700 ease-out will-change-scroll"
                     style={{ 
                       background: rank.orbBg, 
                       color: rank.orbColor,

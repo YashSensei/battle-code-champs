@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useScrollAnimation, useStaggeredAnimation } from "@/hooks/useScrollAnimation";
 
 const FeatureCard = memo(
   ({
@@ -26,6 +27,47 @@ const FeatureCard = memo(
 FeatureCard.displayName = "FeatureCard";
 
 const FeaturesSection = () => {
+  const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
+  const { ref: cardsRef, visibleItems } = useStaggeredAnimation(6, 150);
+
+  const features = [
+    {
+      title: "Real-Time Code Battles",
+      description: "Face off against developers worldwide in live coding duels. Every algorithm matters, every optimization counts.",
+      gradient: "from-blue-500/20 to-purple-600/20",
+      border: "border-blue-500/30",
+    },
+    {
+      title: "Medieval Ranking System", 
+      description: "Climb from Ashigaru to Shōgun through our unique Japanese hierarchy. Honor your code, honor your rank.",
+      gradient: "from-amber-500/20 to-orange-600/20",
+      border: "border-amber-500/30",
+    },
+    {
+      title: "Global Leaderboards",
+      description: "Compete for glory on worldwide rankings. See how your skills stack up against the best coders on Earth.",
+      gradient: "from-green-500/20 to-emerald-600/20", 
+      border: "border-green-500/30",
+    },
+    {
+      title: "Algorithm Challenges",
+      description: "Master data structures, dynamic programming, and complex algorithms through progressively difficult challenges.",
+      gradient: "from-red-500/20 to-pink-600/20",
+      border: "border-red-500/30",
+    },
+    {
+      title: "Code Review & Analysis",
+      description: "Get detailed feedback on your solutions. Learn from defeats, optimize your victories.",
+      gradient: "from-indigo-500/20 to-blue-600/20",
+      border: "border-indigo-500/30", 
+    },
+    {
+      title: "Community Tournaments",
+      description: "Join massive tournaments with hundreds of participants. Forge alliances, make rivals, build your legend.",
+      gradient: "from-purple-500/20 to-violet-600/20",
+      border: "border-purple-500/30",
+    }
+  ];
 
   return (
     <section className="relative py-20 sm:py-24 lg:py-32 -mt-1">
