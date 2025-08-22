@@ -168,14 +168,14 @@ const RanksSection = () => {
         // Calculate progress based on how much we've scrolled past the center point
         const scrolledPastCenter = viewportCenter - sectionCenter;
         
-        // Much larger scroll distance needed for full animation (2x section height)
-        const maxScrollDistance = sectionHeight * 2;
+        // Much larger scroll distance needed for full animation (3x section height)
+        const maxScrollDistance = sectionHeight * 3;
         
         // Apply easing curve for smoother animation
-        const rawProgress = Math.max(0, Math.min(1, (scrolledPastCenter + maxScrollDistance/3) / maxScrollDistance));
+        const rawProgress = Math.max(0, Math.min(1, (scrolledPastCenter + maxScrollDistance/4) / maxScrollDistance));
         
-        // Apply ease-out curve for more natural feeling
-        const easedProgress = 1 - Math.pow(1 - rawProgress, 2);
+        // Apply stronger ease-out curve for more gradual feeling
+        const easedProgress = 1 - Math.pow(1 - rawProgress, 3);
         
         setScrollProgress(easedProgress);
       } else if (sectionCenter > viewportCenter + centerThreshold) {
@@ -226,7 +226,7 @@ const RanksSection = () => {
         <div className="relative w-full max-w-7xl mx-auto">
           <div 
             ref={containerRef}
-            className="flex transition-transform duration-1000 ease-out will-change-scroll"
+            className="flex transition-transform duration-[1500ms] ease-out will-change-scroll"
             style={{ 
               transform: `translateX(-${scrollProgress * (timelineRanks.length - 1) * (100 / timelineRanks.length)}%)`,
               width: `${timelineRanks.length * 100}%`
