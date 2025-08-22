@@ -1,5 +1,4 @@
-import { useRef, memo } from "react";
-import { useIntersectionObserver } from "@/hooks/useParallax";
+import { memo } from "react";
 
 const points = [
   {
@@ -66,7 +65,6 @@ const PointCard = memo(({ point }: { point: (typeof points)[0] }) => (
 PointCard.displayName = "PointCard";
 
 const PointsSection = () => {
-  const { ref: intersectionRef } = useIntersectionObserver(0.1);
 
   return (
     <section
@@ -80,7 +78,6 @@ const PointsSection = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-gradient-to-r from-indigo-600/5 to-purple-600/5 blur-[100px] -z-10" />
 
       <div
-        ref={intersectionRef as any}
         className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8"
       >
         {/* Section header */}

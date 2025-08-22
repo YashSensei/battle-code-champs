@@ -37,39 +37,6 @@ export const useScrollProgress = () => {
   return progress;
 };
 
-export const useIntersectionObserver = (
-  threshold: number = 0.1,
-  rootMargin: string = "0px"
-) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const [hasIntersected, setHasIntersected] = useState(false);
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
-        if (entry.isIntersecting && !hasIntersected) {
-          setHasIntersected(true);
-        }
-      },
-      { threshold, rootMargin }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
-    };
-  }, [threshold, rootMargin, hasIntersected]);
-
-  return { ref, isIntersecting, hasIntersected };
-};
-
 export const useScrollTransform = (
   elementRef: RefObject<HTMLElement>,
   transformConfig: {

@@ -1,4 +1,3 @@
-import { useIntersectionObserver } from "@/hooks/useParallax";
 import { memo } from "react";
 
 const FeatureCard = memo(
@@ -27,7 +26,6 @@ const FeatureCard = memo(
 FeatureCard.displayName = "FeatureCard";
 
 const FeaturesSection = () => {
-  useIntersectionObserver(0.1);
 
   return (
     <section className="relative py-20 sm:py-24 lg:py-32 -mt-1">

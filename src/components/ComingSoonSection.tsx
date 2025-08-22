@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useIntersectionObserver } from "@/hooks/useParallax";
 import { sendWaitlistAcknowledgement } from "@/lib/email";
 
 const ComingSoonSection = () => {
@@ -7,7 +6,6 @@ const ComingSoonSection = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  useIntersectionObserver(0.1);
 
   const isValidEmail = (value: string) =>
     /[^\s@]+@[^\s@]+\.[^\s@]+/.test(value);

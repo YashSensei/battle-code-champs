@@ -1,11 +1,7 @@
-import { useIntersectionObserver } from "@/hooks/useParallax";
-
 const HeroSection = () => {
-  const { ref: intersectionRef } = useIntersectionObserver(0.1);
 
   return (
     <section
-      ref={intersectionRef as any}
       className="relative overflow-hidden min-h-screen flex items-center"
     >
       {/* Background with enhanced gradients - same as ComingSoonSection */}

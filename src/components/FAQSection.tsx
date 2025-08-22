@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useIntersectionObserver } from "@/hooks/useParallax";
 import { ChevronDown } from "lucide-react";
 
 const faqData = [
@@ -78,7 +77,6 @@ const FAQItem = ({
 };
 
 const FAQSection = () => {
-  useIntersectionObserver(0.1);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleQuestion = (index: number) => {
