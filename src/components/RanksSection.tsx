@@ -160,17 +160,24 @@ const RanksSection = () => {
       const viewportCenter = windowHeight / 2;
       
       // Only start animation when section center is near viewport center
-      const centerThreshold = windowHeight * 0.1; // 10% tolerance
+      const centerThreshold = windowHeight * 0.15; // Increased tolerance for smoother start
       const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
       
       if (distanceFromCenter <= centerThreshold) {
         // Section is centered, start the horizontal scroll animation
         // Calculate progress based on how much we've scrolled past the center point
         const scrolledPastCenter = viewportCenter - sectionCenter;
-        const maxScrollDistance = sectionHeight * 0.8; // Use 80% of section height for full animation
         
-        const progress = Math.max(0, Math.min(1, (scrolledPastCenter + maxScrollDistance/2) / maxScrollDistance));
-        setScrollProgress(progress);
+        // Much larger scroll distance needed for full animation (2x section height)
+        const maxScrollDistance = sectionHeight * 2;
+        
+        // Apply easing curve for smoother animation
+        const rawProgress = Math.max(0, Math.min(1, (scrolledPastCenter + maxScrollDistance/3) / maxScrollDistance));
+        
+        // Apply ease-out curve for more natural feeling
+        const easedProgress = 1 - Math.pow(1 - rawProgress, 2);
+        
+        setScrollProgress(easedProgress);
       } else if (sectionCenter > viewportCenter + centerThreshold) {
         // Section hasn't reached center yet
         setScrollProgress(0);
@@ -219,7 +226,7 @@ const RanksSection = () => {
         <div className="relative w-full max-w-7xl mx-auto">
           <div 
             ref={containerRef}
-            className="flex transition-transform duration-700 ease-out will-change-scroll"
+            className="flex transition-transform duration-1000 ease-out will-change-scroll"
             style={{ 
               transform: `translateX(-${scrollProgress * (timelineRanks.length - 1) * (100 / timelineRanks.length)}%)`,
               width: `${timelineRanks.length * 100}%`
@@ -234,7 +241,7 @@ const RanksSection = () => {
                 <div className="flex flex-col items-center text-center max-w-md mx-auto">
                   {/* Rank Icon */}
                   <div 
-                    className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-3xl flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-sm mb-6 sm:mb-8 transition-all duration-700 ease-out will-change-scroll"
+                    className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-3xl flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-sm mb-6 sm:mb-8 transition-all duration-1000 ease-out will-change-scroll"
                     style={{ 
                       background: rank.orbBg, 
                       color: rank.orbColor,
@@ -278,7 +285,7 @@ const RanksSection = () => {
                       </div>
                       <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
                         <div
-                          className="h-full rounded-full transition-all duration-500"
+                          className="h-full rounded-full transition-all duration-800 ease-out"
                           style={{
                             background: rank.glowColors,
                             width: `${(rank.rank / 5) * 100}%`,
